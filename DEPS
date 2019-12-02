@@ -17,6 +17,7 @@ deps = {
   "components/brave_sync/extension/brave-sync": "https://github.com/brave/sync.git@bde4bf8dcd56e41cc064d613219dc3382c178856",
   "vendor/bat-native-usermodel": "https://github.com/brave-intl/bat-native-usermodel.git@45e32155af9897dbe1d5534dd36697ec4728bb75",
   "vendor/challenge_bypass_ristretto_ffi": "https://github.com/brave-intl/challenge-bypass-ristretto-ffi.git@c396fb4eb9e9bf63b89ae5a0ec0b5f201d43c7c5",
+  "vendor/brave_performance_predictor": "https://github.com/brave-experiments/brave-performance-predictor.git@21650db549ea65621d4e4626a6dd1d3b2bb058fc",
 }
 
 hooks = [

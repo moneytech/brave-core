@@ -1,0 +1,27 @@
+
+source_set("browser") {
+  public_deps = [
+    # "buildflags",
+  ]
+
+  sources = [
+    "perf_predictor_web_contents_observer.cc",
+    "perf_predictor_web_contents_observer.h",
+    "perf_predictor_page_metrics_observer.cc",
+    "perf_predictor_page_metrics_observer.h",
+  ]
+
+  deps = [
+    "//brave/vendor/brave_performance_predictor",
+    "//brave/components/content_settings/core/browser",
+    "//brave/content:common",
+    "//chrome/common",
+    "//components/content_settings/core/common",
+    "//components/content_settings/core/browser",
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+    "//components/sessions",
+    "//content/public/browser",
+    "//content/public/common",
+  ]
+}
