@@ -14,7 +14,7 @@
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
 #include "content/public/common/resource_load_info.mojom.h"
-#include "chrome/browser/page_load_metrics/page_load_metrics_observer.h"
+#include "components/page_load_metrics/browser/page_load_metrics_observer.h"
 
 #include "brave/vendor/brave_performance_predictor/src/bandwidth_savings_predictor.h"
 

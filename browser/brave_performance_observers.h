@@ -5,7 +5,7 @@
 #ifndef BRAVE_BROWSER_BRAVE_PERFORMANCE_OBSERVERS_H_
 #define BRAVE_BROWSER_BRAVE_PERFORMANCE_OBSERVERS_H_
 
-#include "chrome/browser/page_load_metrics/page_load_tracker.h"
+#include "components/page_load_metrics/browser/page_load_tracker.h"
 
 namespace page_load_metrics {
 class PageLoadTracker;

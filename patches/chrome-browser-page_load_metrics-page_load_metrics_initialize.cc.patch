@@ -1,18 +1,19 @@
 diff --git a/chrome/browser/page_load_metrics/page_load_metrics_initialize.cc b/chrome/browser/page_load_metrics/page_load_metrics_initialize.cc
-index 0ad976f5089d4b10e2b0983dd834091f837dfc47..fb2cc18233dbe03be0a557fe30c35936d8b1f534 100644
+index 9bb1490b5d45eb7ed208f1f6b0332a1e3732aa29..5667b397f38abae2d3f4a54a004769746c644ac1 100644
 --- a/chrome/browser/page_load_metrics/page_load_metrics_initialize.cc
 +++ b/chrome/browser/page_load_metrics/page_load_metrics_initialize.cc
-@@ -9,6 +9,7 @@
+@@ -62,6 +62,8 @@
+ #include "extensions/common/constants.h"
+ #endif
  
- #include "base/macros.h"
- #include "base/timer/timer.h"
 +#include "brave/browser/brave_performance_observers.h"
- #include "build/build_config.h"
- #include "chrome/browser/page_load_metrics/metrics_web_contents_observer.h"
- #include "chrome/browser/page_load_metrics/observers/aborts_page_load_metrics_observer.h"
-@@ -167,6 +168,7 @@ void PageLoadMetricsEmbedder::RegisterObservers(
++
+ namespace chrome {
+ 
+ namespace {
+@@ -175,6 +177,7 @@ void PageLoadMetricsEmbedder::RegisterEmbedderObservers(
        SecurityStatePageLoadMetricsObserver::MaybeCreateForProfile(
-           web_contents_->GetBrowserContext()));
+           web_contents()->GetBrowserContext()));
    tracker->AddObserver(std::make_unique<DataUseMetricsObserver>());
 +  brave::RegisterPerformanceObservers(tracker);
  }
