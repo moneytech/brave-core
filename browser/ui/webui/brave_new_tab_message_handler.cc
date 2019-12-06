@@ -69,6 +69,9 @@ base::DictionaryValue GetStatsDictionary(PrefService* prefs) {
   stats_data.SetInteger(
     "fingerprintingBlockedStat",
     prefs->GetUint64(kFingerprintingBlocked));
+  stats_data.SetInteger(
+    "bandwidthSavedStat",
+    prefs->GetUint64(kBandwidthSavedBytes));
   return stats_data;
 }
 
