@@ -4,6 +4,7 @@ import("//brave/browser/translate/buildflags/buildflags.gni")
 import("//brave/components/brave_ads/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_referrals/buildflags/buildflags.gni")
 import("//brave/components/brave_rewards/browser/buildflags/buildflags.gni")
+import("//brave/components/brave_savings/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_sync/buildflags/buildflags.gni")
 import("//brave/components/brave_wallet/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_wayback_machine/buildflags/buildflags.gni")
@@ -104,8 +105,6 @@ test("brave_unit_tests") {
     "//components/bookmarks/browser/bookmark_model_unittest.cc",
     "../../components/domain_reliability/test_util.cc",
     "../../components/domain_reliability/test_util.h",
-    "//brave/vendor/brave_performance_predictor/test/third_party_extractor_unittest.cc",
-    "//brave/vendor/brave_performance_predictor/test/predictor_unittest.cc",
   ]
 
   deps = [
@@ -623,6 +622,17 @@ test("brave_browser_tests") {
     configs += [ "//brave/vendor/bat-native-confirmations:internal_config" ]
   }
 
+  if (brave_perf_predictor_enabled) {
+    sources += [
+      "//brave/vendor/brave_performance_predictor/test/third_party_extractor_unittest.cc",
+      "//brave/vendor/brave_performance_predictor/test/predictor_unittest.cc",
+    ]
+
+    deps += [
+      "//brave/vendor/brave_performance_predictor",
+    ]
+  }
+
   if (enable_tor) {
     sources += [
       "//brave/browser/extensions/brave_tor_client_updater_browsertest.cc",
@@ -674,7 +684,6 @@ test("brave_browser_tests") {
     ":brave_browser_tests_deps",
     ":browser_tests_runner",
     "//testing/gmock",
-    "//brave/vendor/brave_performance_predictor",
   ]
   # enable_plugins should be used here
   if (!is_android) {

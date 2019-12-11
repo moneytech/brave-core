@@ -26,31 +26,35 @@ class Stats extends React.Component<Props, {}> {
   }
 
   get estimatedBandwidthSaved () {
-    const estimatedBWSaved = this.props.stats.bandwidthSavedStat || 0
-    const bytes = estimatedBWSaved < 1024
-    const kilobytes = estimatedBWSaved < 1024 * 1024
-    const megabytes = estimatedBWSaved < 1024 * 1024 * 1024
+    const estimatedBWSaved = this.props.stats.bandwidthSavedStat
+    if (estimatedBWSaved) {
+      const bytes = estimatedBWSaved < 1024
+      const kilobytes = estimatedBWSaved < 1024 * 1024
+      const megabytes = estimatedBWSaved < 1024 * 1024 * 1024
 
-    let counter
-    let id
-    if (bytes) {
-      counter = estimatedBWSaved
-      id = 'B'
-    } else if (kilobytes) {
-      counter = (estimatedBWSaved / 1024).toFixed(0)
-      id = 'KB'
-    } else if (megabytes) {
-      counter = (estimatedBWSaved / 1024 / 1024).toFixed(1)
-      id = 'MB'
+      let counter
+      let id
+      if (bytes) {
+        counter = estimatedBWSaved
+        id = 'B'
+      } else if (kilobytes) {
+        counter = (estimatedBWSaved / 1024).toFixed(0)
+        id = 'KB'
+      } else if (megabytes) {
+        counter = (estimatedBWSaved / 1024 / 1024).toFixed(1)
+        id = 'MB'
+      } else {
+        counter = (estimatedBWSaved / 1024 / 1024 / 1024).toFixed(2)
+        id = 'GB'
+      }
+
+      return {
+        id,
+        value: counter,
+        args: JSON.stringify({ value: counter })
+      }
     } else {
-      counter = (estimatedBWSaved / 1024 / 1024 / 1024).toFixed(2)
-      id = 'GB'
-    }
-
-    return {
-      id,
-      value: counter,
-      args: JSON.stringify({ value: counter })
+      return false;
     }
   }
 
@@ -107,11 +111,13 @@ class Stats extends React.Component<Props, {}> {
           text={getLocale(timeSaved.id)}
           description={getLocale('estimatedTimeSaved')}
         />
-        <StatsItem
-          counter={bandwidthSaved.value}
-          text={getLocale(bandwidthSaved.id)}
-          description={getLocale('estimatedBandwidthSaved')}
-        />
+        {bandwidthSaved &&
+          <StatsItem
+            counter={bandwidthSaved.value}
+            text={getLocale(bandwidthSaved.id)}
+            description={getLocale('estimatedBandwidthSaved')}
+          />
+        }
       </StatsContainer>
     )
   }

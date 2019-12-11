@@ -4,15 +4,20 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/browser/brave_performance_observers.h"
+#include "brave/components/brave_savings/browser/buildflags/buildflags.h"
 
+#if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
 #include "brave/components/brave_savings/browser/perf_predictor_page_metrics_observer.h"
-
 using brave_perf_predictor::PerfPredictorPageMetricsObserver;
+#endif
 
 namespace brave {
 
 void RegisterPerformanceObservers(page_load_metrics::PageLoadTracker* tracker) {
+#if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
   tracker->AddObserver(std::make_unique<PerfPredictorPageMetricsObserver>());
+#endif
+
 }
 
 }  // namespace brave

@@ -1,7 +1,8 @@
+import("//brave/build/config.gni")
 
 source_set("browser") {
   public_deps = [
-    # "buildflags",
+    "buildflags",
   ]
 
   sources = [
