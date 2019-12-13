@@ -33,7 +33,7 @@ const defaultState: NewTab.State = {
     javascriptBlockedStat: 0,
     httpsUpgradesStat: 0,
     fingerprintingBlockedStat: 0,
-    bandwidthSavedStat: 0,
+    bandwidthSavedStat: 0
   },
   rewardsState: {
     adsEstimatedEarnings: 0,

@@ -54,7 +54,7 @@ class Stats extends React.Component<Props, {}> {
         args: JSON.stringify({ value: counter })
       }
     } else {
-      return false;
+      return false
     }
   }
 

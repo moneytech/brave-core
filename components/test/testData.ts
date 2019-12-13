@@ -58,7 +58,7 @@ export const newTabInitialState: NewTab.ApplicationState = {
       javascriptBlockedStat: 0,
       httpsUpgradesStat: 0,
       fingerprintingBlockedStat: 0,
-      bandwidthSavedStat: 0,
+      bandwidthSavedStat: 0
     }
   }
 }
