@@ -33,14 +33,16 @@ namespace brave_perf_predictor {
 
 class ThirdPartyExtractor;
 
-PerfPredictorWebContentsObserver::PerfPredictorWebContentsObserver(content::WebContents* web_contents)
+PerfPredictorWebContentsObserver::PerfPredictorWebContentsObserver(
+    content::WebContents* web_contents)
     : WebContentsObserver(web_contents),
       tab_id_(SessionTabHelper::IdForTab(web_contents)) {
   if (!tab_id_.is_valid()) {
     return;
   }
 
-  Profile* profile = Profile::FromBrowserContext(web_contents->GetBrowserContext());
+  Profile* profile = Profile::FromBrowserContext(
+    web_contents->GetBrowserContext());
   if (!profile || profile->IsOffTheRecord()) {
     return;
   }
@@ -77,7 +79,7 @@ void PerfPredictorWebContentsObserver::ReadyToCommitNavigation(
   // Reset predictor state when we're committed to this navigation
   bandwidth_predictor_->Reset();
   navigation_id_ = handle->GetNavigationId();
-  VLOG(2) << tab_id_ 
+  VLOG(2) << tab_id_
     << " committed navigation ID " << navigation_id_
     << " to " << handle->GetURL().GetContent();
 }
@@ -155,4 +157,4 @@ void PerfPredictorWebContentsObserver::RegisterProfilePrefs(
 
 WEB_CONTENTS_USER_DATA_KEY_IMPL(PerfPredictorWebContentsObserver)
 
-}
+}  // namespace brave_perf_predictor

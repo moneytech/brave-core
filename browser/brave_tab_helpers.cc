@@ -46,6 +46,7 @@
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
 #include "brave/components/brave_savings/browser/perf_predictor_web_contents_observer.h"
+using brave_perf_predictor::PerfPredictorWebContentsObserver;
 #endif
 
 namespace brave {
@@ -85,7 +86,7 @@ void AttachTabHelpers(content::WebContents* web_contents) {
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-  brave_perf_predictor::PerfPredictorWebContentsObserver::CreateForWebContents(web_contents);
+  PerfPredictorWebContentsObserver::CreateForWebContents(web_contents);
 #endif
 
   brave_ads::AdsTabHelper::CreateForWebContents(web_contents);

@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_ADBLOCK_SAVINGS_METRICS_OBSERVER_H_
-#define BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_ADBLOCK_SAVINGS_METRICS_OBSERVER_H_
+#ifndef BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_PAGE_METRICS_OBSERVER_H_
+#define BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_PAGE_METRICS_OBSERVER_H_
 
 #include <stdint.h>
 #include <string>
@@ -55,5 +55,4 @@ class PerfPredictorPageMetricsObserver
 
 }  // namespace brave_perf_predictor
 
-#endif  // BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_ADBLOCK_SAVINGS_METRICS_OBSERVER_H_
-                                                                                
+#endif  // BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_PAGE_METRICS_OBSERVER_H_

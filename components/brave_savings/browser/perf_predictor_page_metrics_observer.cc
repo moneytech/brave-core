@@ -38,7 +38,7 @@ PerfPredictorPageMetricsObserver::OnCommit(
 
   navigation_id_ = navigation_handle->GetNavigationId();
   // We'll be forwarding all performance metrics to the observer
-  observer_ = brave_perf_predictor::PerfPredictorWebContentsObserver::FromWebContents(
+  observer_ = PerfPredictorWebContentsObserver::FromWebContents(
         navigation_handle->GetWebContents());
   if (!observer_) {
     return STOP_OBSERVING;
@@ -62,18 +62,19 @@ void PerfPredictorPageMetricsObserver::OnFirstContentfulPaintInPage(
     observer_->OnPageLoadTimingUpdated(timing);
   }
   VLOG(2) << navigation_id_ << " paint timing "
-    << "NavigationToFirstContentfulPaint " 
+    << "NavigationToFirstContentfulPaint "
     << timing.paint_timing->first_contentful_paint.value();
 }
 
-void PerfPredictorPageMetricsObserver::OnFirstMeaningfulPaintInMainFrameDocument(
+void PerfPredictorPageMetricsObserver::
+  OnFirstMeaningfulPaintInMainFrameDocument(
     const page_load_metrics::mojom::PageLoadTiming& timing) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
   }
   VLOG(2) << navigation_id_ << " paint timing "
-    << "NavigationToFirstMeaningfulPaint " 
+    << "NavigationToFirstMeaningfulPaint "
     << timing.paint_timing->first_meaningful_paint.value();
 }
 
@@ -84,8 +85,8 @@ void PerfPredictorPageMetricsObserver::OnLoadEventStart(
     observer_->OnPageLoadTimingUpdated(timing);
   }
   VLOG(2) << navigation_id_ << " document timing "
-    << "NavigationToLoadEventFired " 
+    << "NavigationToLoadEventFired "
     << timing.document_timing->load_event_start.value();
 }
 
-}  // namespace brave_perf_predictor                                                                           
+}  // namespace brave_perf_predictor
