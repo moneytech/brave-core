@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
-#define BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
+#ifndef BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_PERF_PREDICTOR_TAB_HELPER_H_
+#define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_PERF_PREDICTOR_TAB_HELPER_H_
 
 #include <string>
 
@@ -26,11 +26,11 @@ class PrefRegistrySimple;
 
 namespace brave_perf_predictor {
 
-class PerfPredictorWebContentsObserver : public content::WebContentsObserver,
-    public content::WebContentsUserData<PerfPredictorWebContentsObserver> {
+class PerfPredictorTabHelper : public content::WebContentsObserver,
+    public content::WebContentsUserData<PerfPredictorTabHelper> {
  public:
-  explicit PerfPredictorWebContentsObserver(content::WebContents*);
-  ~PerfPredictorWebContentsObserver() override;
+  explicit PerfPredictorTabHelper(content::WebContents*);
+  ~PerfPredictorTabHelper() override;
   void OnBlockedSubresource(const std::string& subresource);
   void OnPageLoadTimingUpdated(
     const page_load_metrics::mojom::PageLoadTiming& timing);
@@ -54,16 +54,16 @@ class PerfPredictorWebContentsObserver : public content::WebContentsObserver,
   void WebContentsDestroyed() override;
 
  private:
-  friend class content::WebContentsUserData<PerfPredictorWebContentsObserver>;
+  friend class content::WebContentsUserData<PerfPredictorTabHelper>;
   SessionID tab_id_;
   int64_t navigation_id_;
   GURL main_frame_url_;
   BandwidthSavingsPredictor* bandwidth_predictor_;
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();
-  DISALLOW_COPY_AND_ASSIGN(PerfPredictorWebContentsObserver);
+  DISALLOW_COPY_AND_ASSIGN(PerfPredictorTabHelper);
 };
 
 }  // namespace brave_perf_predictor
 
-#endif  // BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_PERF_PREDICTOR_TAB_HELPER_H_

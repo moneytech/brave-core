@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_web_contents_observer.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
 #include "base/memory/singleton.h"
 #include "chrome/browser/profiles/profile.h"
@@ -33,7 +33,7 @@ namespace brave_perf_predictor {
 
 class ThirdPartyExtractor;
 
-PerfPredictorWebContentsObserver::PerfPredictorWebContentsObserver(
+PerfPredictorTabHelper::PerfPredictorTabHelper(
     content::WebContents* web_contents)
     : WebContentsObserver(web_contents),
       tab_id_(SessionTabHelper::IdForTab(web_contents)) {
@@ -54,13 +54,13 @@ PerfPredictorWebContentsObserver::PerfPredictorWebContentsObserver(
   bandwidth_predictor_ = new BandwidthSavingsPredictor(extractor);
 }
 
-PerfPredictorWebContentsObserver::~PerfPredictorWebContentsObserver() {
+PerfPredictorTabHelper::~PerfPredictorTabHelper() {
   if (bandwidth_predictor_) {
     delete bandwidth_predictor_;
   }
 }
 
-void PerfPredictorWebContentsObserver::DidStartNavigation(
+void PerfPredictorTabHelper::DidStartNavigation(
     content::NavigationHandle* handle) {
   if (!handle->IsInMainFrame() || handle->IsDownload()) {
     return;
@@ -71,7 +71,7 @@ void PerfPredictorWebContentsObserver::DidStartNavigation(
   }
 }
 
-void PerfPredictorWebContentsObserver::ReadyToCommitNavigation(
+void PerfPredictorTabHelper::ReadyToCommitNavigation(
     content::NavigationHandle* handle) {
   if (!handle->IsInMainFrame() || handle->IsDownload()) {
     return;
@@ -84,7 +84,7 @@ void PerfPredictorWebContentsObserver::ReadyToCommitNavigation(
     << " to " << handle->GetURL().GetContent();
 }
 
-void PerfPredictorWebContentsObserver::DidFinishNavigation(
+void PerfPredictorTabHelper::DidFinishNavigation(
     content::NavigationHandle* handle) {
   if (!handle->IsInMainFrame() ||
       !handle->HasCommitted() ||
@@ -95,7 +95,7 @@ void PerfPredictorWebContentsObserver::DidFinishNavigation(
   main_frame_url_ = handle->GetURL();
 }
 
-void PerfPredictorWebContentsObserver::RecordSaving() {
+void PerfPredictorTabHelper::RecordSaving() {
   if (bandwidth_predictor_ && web_contents()) {
     uint64_t saving = (uint64_t)bandwidth_predictor_->predict();
     if (saving > 0) {
@@ -112,7 +112,7 @@ void PerfPredictorWebContentsObserver::RecordSaving() {
   }
 }
 
-void PerfPredictorWebContentsObserver::ResourceLoadComplete(
+void PerfPredictorTabHelper::ResourceLoadComplete(
     content::RenderFrameHost* render_frame_host,
     const content::GlobalRequestID& request_id,
     const content::mojom::ResourceLoadInfo& resource_load_info) {
@@ -122,14 +122,14 @@ void PerfPredictorWebContentsObserver::ResourceLoadComplete(
   }
 }
 
-void PerfPredictorWebContentsObserver::OnBlockedSubresource(
+void PerfPredictorTabHelper::OnBlockedSubresource(
     const std::string& subresource) {
   if (bandwidth_predictor_) {
     bandwidth_predictor_->OnSubresourceBlocked(subresource);
   }
 }
 
-void PerfPredictorWebContentsObserver::DidAttachInterstitialPage() {
+void PerfPredictorTabHelper::DidAttachInterstitialPage() {
   // web contents unloaded
   if (bandwidth_predictor_) {
     // Predict to clear the state, but don't save the result
@@ -137,12 +137,12 @@ void PerfPredictorWebContentsObserver::DidAttachInterstitialPage() {
   }
 }
 
-void PerfPredictorWebContentsObserver::WebContentsDestroyed() {
+void PerfPredictorTabHelper::WebContentsDestroyed() {
   // Run a prediction when Web Contents get destroyed (e.g. tab/window closed)
   RecordSaving();
 }
 
-void PerfPredictorWebContentsObserver::OnPageLoadTimingUpdated(
+void PerfPredictorTabHelper::OnPageLoadTimingUpdated(
     const page_load_metrics::mojom::PageLoadTiming& timing) {
   if (bandwidth_predictor_) {
     bandwidth_predictor_->OnPageLoadTimingUpdated(timing);
@@ -150,11 +150,11 @@ void PerfPredictorWebContentsObserver::OnPageLoadTimingUpdated(
 }
 
 // static
-void PerfPredictorWebContentsObserver::RegisterProfilePrefs(
+void PerfPredictorTabHelper::RegisterProfilePrefs(
     PrefRegistrySimple* registry) {
   registry->RegisterUint64Pref(kBandwidthSavedBytes, 0);
 }
 
-WEB_CONTENTS_USER_DATA_KEY_IMPL(PerfPredictorWebContentsObserver)
+WEB_CONTENTS_USER_DATA_KEY_IMPL(PerfPredictorTabHelper)
 
 }  // namespace brave_perf_predictor

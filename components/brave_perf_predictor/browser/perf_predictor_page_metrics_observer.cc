@@ -38,7 +38,7 @@ PerfPredictorPageMetricsObserver::OnCommit(
 
   navigation_id_ = navigation_handle->GetNavigationId();
   // We'll be forwarding all performance metrics to the observer
-  observer_ = PerfPredictorWebContentsObserver::FromWebContents(
+  observer_ = PerfPredictorTabHelper::FromWebContents(
         navigation_handle->GetWebContents());
   if (!observer_) {
     return STOP_OBSERVING;

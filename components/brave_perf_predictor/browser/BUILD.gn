@@ -13,8 +13,8 @@ source_set("browser") {
     "third_party_extractor.cc",
     "bandwidth_savings_predictor.h",
     "bandwidth_savings_predictor.cc",
-    "perf_predictor_web_contents_observer.cc",
-    "perf_predictor_web_contents_observer.h",
+    "perf_predictor_tab_helper.cc",
+    "perf_predictor_tab_helper.h",
     "perf_predictor_page_metrics_observer.cc",
     "perf_predictor_page_metrics_observer.h",
   ]

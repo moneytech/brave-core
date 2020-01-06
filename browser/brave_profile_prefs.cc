@@ -53,7 +53,7 @@
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_web_contents_observer.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 #endif
 
 using extensions::FeatureSwitch;
@@ -78,7 +78,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
       registry);
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-  brave_perf_predictor::PerfPredictorWebContentsObserver::RegisterProfilePrefs(
+  brave_perf_predictor::PerfPredictorTabHelper::RegisterProfilePrefs(
       registry);
 #endif
 

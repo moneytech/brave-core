@@ -48,8 +48,8 @@ using extensions::EventRouter;
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_web_contents_observer.h"
-using brave_perf_predictor::PerfPredictorWebContentsObserver;
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
+using brave_perf_predictor::PerfPredictorTabHelper;
 #endif
 
 using content::Referrer;
@@ -263,8 +263,8 @@ void BraveShieldsWebContentsObserver::DispatchBlockedEvent(
     }
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-    PerfPredictorWebContentsObserver* blocking_observer =
-        PerfPredictorWebContentsObserver::FromWebContents(web_contents);
+    PerfPredictorTabHelper* blocking_observer =
+        PerfPredictorTabHelper::FromWebContents(web_contents);
     if (blocking_observer) {
       blocking_observer->OnBlockedSubresource(subresource);
     }

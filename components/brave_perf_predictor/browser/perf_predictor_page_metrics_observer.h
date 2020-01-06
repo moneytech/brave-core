@@ -15,7 +15,7 @@
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
 #include "components/sessions/core/session_id.h"
 #include "services/metrics/public/cpp/ukm_source_id.h"
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_web_contents_observer.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
 namespace content {
 class BrowserContext;
@@ -47,7 +47,7 @@ class PerfPredictorPageMetricsObserver
   int64_t navigation_id_ = 0;
 
   // The browser context this navigation is operating in.
-  PerfPredictorWebContentsObserver* observer_ = nullptr;
+  PerfPredictorTabHelper* observer_ = nullptr;
 
   SEQUENCE_CHECKER(sequence_checker_);
   DISALLOW_COPY_AND_ASSIGN(PerfPredictorPageMetricsObserver);
