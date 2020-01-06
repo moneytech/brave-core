@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
-#define BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
+#ifndef BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
+#define BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
 
 #include <string>
 
@@ -16,7 +16,7 @@
 #include "content/public/common/resource_load_info.mojom.h"
 #include "components/page_load_metrics/browser/page_load_metrics_observer.h"
 
-#include "brave/vendor/brave_performance_predictor/src/bandwidth_savings_predictor.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
 
 namespace content {
 class WebContents;
@@ -66,4 +66,4 @@ class PerfPredictorWebContentsObserver : public content::WebContentsObserver,
 
 }  // namespace brave_perf_predictor
 
-#endif  // BRAVE_COMPONENTS_BRAVE_SAVINGS_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_
+#endif  // BRAVE_COMPONENTS_brave_perf_predictor_BROWSER_PERF_PREDICTOR_WEB_CONTENTS_OBSERVER_H_

@@ -1,5 +1,5 @@
 import("//build/config/features.gni")
 
 declare_args() {
-  brave_perf_predictor_enabled = true
+   enable_brave_perf_predictor = true
 }

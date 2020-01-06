@@ -6,10 +6,10 @@
 #include <memory>
 
 #include "brave/browser/brave_performance_observers.h"
-#include "brave/components/brave_savings/browser/buildflags/buildflags.h"
+#include "brave/components/brave_perf_predictor/browser/buildflags/buildflags.h"
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-#include "brave/components/brave_savings/browser/perf_predictor_page_metrics_observer.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_page_metrics_observer.h"
 using brave_perf_predictor::PerfPredictorPageMetricsObserver;
 #endif
 

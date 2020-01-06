@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_savings/browser/perf_predictor_web_contents_observer.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_web_contents_observer.h"
 
 #include "base/memory/singleton.h"
 #include "chrome/browser/profiles/profile.h"
@@ -22,8 +22,8 @@
 #include "content/public/browser/web_contents_user_data.h"
 #include "content/public/common/resource_type.h"
 #include "brave/common/pref_names.h"
-#include "brave/vendor/brave_performance_predictor/src/third_party_extractor.h"
-#include "brave/vendor/brave_performance_predictor/src/third_parties.h"
+#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "brave/components/brave_perf_predictor/browser/third_parties.h"
 
 using content::ResourceType;
 using base::Singleton;

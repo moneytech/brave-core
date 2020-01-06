@@ -4,7 +4,7 @@ import("//brave/browser/translate/buildflags/buildflags.gni")
 import("//brave/components/brave_ads/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_referrals/buildflags/buildflags.gni")
 import("//brave/components/brave_rewards/browser/buildflags/buildflags.gni")
-import("//brave/components/brave_savings/browser/buildflags/buildflags.gni")
+import("//brave/components/brave_perf_predictor/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_sync/buildflags/buildflags.gni")
 import("//brave/components/brave_wallet/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_wayback_machine/buildflags/buildflags.gni")
@@ -622,14 +622,14 @@ test("brave_browser_tests") {
     configs += [ "//brave/vendor/bat-native-confirmations:internal_config" ]
   }
 
-  if (brave_perf_predictor_enabled) {
+  if (enable_brave_perf_predictor) {
     sources += [
-      "//brave/vendor/brave_performance_predictor/test/third_party_extractor_unittest.cc",
-      "//brave/vendor/brave_performance_predictor/test/predictor_unittest.cc",
+      "//brave/components/brave_perf_predictor/browser/third_party_extractor_unittest.cc",
+      "//brave/components/brave_perf_predictor/browser/predictor_unittest.cc",
     ]
 
     deps += [
-      "//brave/vendor/brave_performance_predictor",
+      "//brave/components/brave_perf_predictor/browser",
     ]
   }
 
