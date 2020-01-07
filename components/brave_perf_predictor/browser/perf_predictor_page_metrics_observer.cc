@@ -6,11 +6,9 @@
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_page_metrics_observer.h"
 
 #include "content/public/browser/browser_context.h"
-#include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/web_contents.h"
-#include "content/public/common/content_features.h"
-#include "url/gurl.h"
-#include "extensions/browser/event_router.h"
+
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
 namespace brave_perf_predictor {
 

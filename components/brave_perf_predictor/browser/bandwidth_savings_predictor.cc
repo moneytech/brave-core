@@ -1,9 +1,15 @@
-#include "bandwidth_savings_predictor.h"
-#include "predictor.h"
+/* Copyright (c) 2019 The Brave Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
 
 #include "base/logging.h"
 #include "content/public/common/resource_type.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
+
+#include "brave/components/brave_perf_predictor/browser/predictor.h"
 
 namespace brave_perf_predictor {
 
@@ -21,9 +27,11 @@ void BandwidthSavingsPredictor::OnPageLoadTimingUpdated(
       timing.paint_timing->first_meaningful_paint.value().InMillisecondsF();
   }
   // DOM Content Loaded
-  if (timing.document_timing->dom_content_loaded_event_start.has_value()) {
+  if (timing.document_timing->
+      dom_content_loaded_event_start.has_value()) {
     feature_map_["metrics.observedDomContentLoaded"] =
-      timing.document_timing->dom_content_loaded_event_start.value().InMillisecondsF();
+      timing.document_timing->
+        dom_content_loaded_event_start.value().InMillisecondsF();
   }
   // First contentful paint
   if (timing.paint_timing->first_contentful_paint.has_value()) {
@@ -65,18 +73,20 @@ void BandwidthSavingsPredictor::OnResourceLoadComplete(
   }
   main_frame_url_ = main_frame_url;
   
-  bool is_third_party = !net::registry_controlled_domains::SameDomainOrHost(main_frame_url,
-      resource_load_info.url,
+  bool is_third_party = !net::registry_controlled_domains::SameDomainOrHost(
+      main_frame_url, resource_load_info.url,
       net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
   
   if (is_third_party) {
     feature_map_["resources.third-party.requestCount"] += 1;
-    feature_map_["resources.third-party.size"] += resource_load_info.raw_body_bytes;    
+    feature_map_["resources.third-party.size"] +=
+      resource_load_info.raw_body_bytes;    
   }
 
   feature_map_["resources.total.requestCount"] += 1;
   feature_map_["resources.total.size"] += resource_load_info.raw_body_bytes;
-  feature_map_["transfer.total.size"] += resource_load_info.total_received_bytes;
+  feature_map_["transfer.total.size"] +=
+    resource_load_info.total_received_bytes;
   std::string resource_type;
   switch(resource_load_info.resource_type) {
     case content::ResourceType::kMainFrame:
@@ -105,7 +115,8 @@ void BandwidthSavingsPredictor::OnResourceLoadComplete(
       break;
   }
   feature_map_["resources." + resource_type + ".requestCount"] += 1;
-  feature_map_["resources." + resource_type + ".size"] += resource_load_info.raw_body_bytes;
+  feature_map_["resources." + resource_type + ".size"] +=
+    resource_load_info.raw_body_bytes;
 }
 
 double BandwidthSavingsPredictor::predict() {
@@ -115,8 +126,8 @@ double BandwidthSavingsPredictor::predict() {
     return 0;
   }
   if (feature_map_["transfer.total.size"] > 0) {
-    LOG(ERROR) << "\t " << main_frame_url_ << " \ttotal download size\t " 
-      << feature_map_["transfer.total.size"] << " \tbytes";
+    VLOG(2) << main_frame_url_ << " total download size " 
+      << feature_map_["transfer.total.size"] << " bytes";
   }
 
   // Short-circuit if nothing got blocked
@@ -125,16 +136,16 @@ double BandwidthSavingsPredictor::predict() {
     return 0;
   }
   if (VLOG_IS_ON(3)) {
-    VLOG(3) << "Predicting on feature map:";
+    VLOG(2) << "Predicting on feature map:";
     auto it = feature_map_.begin();
     while(it != feature_map_.end()) {
-      VLOG(3) << it->first << " :: " << it->second;
+      VLOG(2) << it->first << " :: " << it->second;
       it++;
     }
   }
   double prediction = ::brave_perf_predictor::predict(feature_map_);
-  LOG(ERROR) << "\t " << main_frame_url_ << " \testimated saving\t "
-    << prediction << " \tbytes";
+  VLOG(2) << main_frame_url_ << " estimated saving "
+    << prediction << " bytes";
   Reset();
   return prediction;
 }

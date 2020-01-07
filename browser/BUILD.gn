@@ -46,8 +46,6 @@ source_set("browser_process") {
     "brave_content_browser_client.h",
     "brave_local_state_prefs.cc",
     "brave_local_state_prefs.h",
-    "brave_performance_observers.cc",
-    "brave_performance_observers.h",
     "brave_profile_prefs.cc",
     "brave_profile_prefs.h",
     "brave_stats_updater.cc",

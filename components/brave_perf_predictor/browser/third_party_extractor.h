@@ -1,7 +1,11 @@
-#ifndef BRAVE_PERFORMANCE_PREDICTOR_THIRD_PARTY_EXTRACTOR_H_
-#define BRAVE_PERFORMANCE_PREDICTOR_THIRD_PARTY_EXTRACTOR_H_
+/* Copyright (c) 2019 The Brave Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <cstdint>
+#ifndef BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_THIRD_PARTY_EXTRACTOR_H_
+#define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_THIRD_PARTY_EXTRACTOR_H_
+
 #include <string>
 #include <unordered_map>
 
@@ -38,4 +42,4 @@ class ThirdPartyExtractor {
 
 }
 
-#endif  // BRAVE_PERFORMANCE_PREDICTOR_THIRD_PARTY_EXTRACTOR_H_
+#endif  // BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_THIRD_PARTY_EXTRACTOR_H_

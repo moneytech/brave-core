@@ -10,6 +10,7 @@
 #include "components/page_load_metrics/browser/observers/core_page_load_metrics_observer.h"
 #include "components/page_load_metrics/browser/observers/use_counter_page_load_metrics_observer.h"
 #include "components/page_load_metrics/browser/page_load_tracker.h"
+
 #include "brave/components/brave_perf_predictor/browser/buildflags/buildflags.h"
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)

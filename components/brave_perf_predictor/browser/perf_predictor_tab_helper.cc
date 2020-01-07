@@ -5,24 +5,16 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
+#include "brave/common/pref_names.h"
 #include "components/prefs/pref_service.h"
-#include "components/prefs/pref_registry_simple.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
-#include "content/public/browser/navigation_handle.h"
-#include "content/public/browser/render_frame_host.h"
-#include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_user_data.h"
-#include "content/public/common/resource_type.h"
-#include "brave/common/pref_names.h"
+
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "brave/components/brave_perf_predictor/browser/third_parties.h"
 
-using content::WebContents;
-
 namespace brave_perf_predictor {
-
-class ThirdPartyExtractor;
 
 PerfPredictorTabHelper::PerfPredictorTabHelper(
     content::WebContents* web_contents)
@@ -63,7 +55,7 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
   // Reset predictor state when we're committed to this navigation
   bandwidth_predictor_->Reset();
   navigation_id_ = handle->GetNavigationId();
-  VLOG(2) << " committed navigation ID " << navigation_id_
+  VLOG(2) << "Committed navigation ID " << navigation_id_
     << " to " << handle->GetURL().GetContent();
 }
 

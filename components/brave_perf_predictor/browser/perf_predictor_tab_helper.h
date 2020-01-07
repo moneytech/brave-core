@@ -9,20 +9,18 @@
 #include <string>
 
 #include "base/macros.h"
-#include "base/strings/string16.h"
-#include "components/sessions/core/session_id.h"
+#include "components/page_load_metrics/common/page_load_metrics.mojom.h"
+#include "components/prefs/pref_registry_simple.h"
+#include "content/public/browser/navigation_handle.h"
+#include "content/public/browser/render_frame_host.h"
+#include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
 #include "content/public/common/resource_load_info.mojom.h"
-#include "components/page_load_metrics/browser/page_load_metrics_observer.h"
+#include "url/gurl.h"
 
 #include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
-
-namespace content {
-class WebContents;
-}
-
-class PrefRegistrySimple;
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
 namespace brave_perf_predictor {
 
