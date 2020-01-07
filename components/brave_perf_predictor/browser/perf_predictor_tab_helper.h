@@ -55,7 +55,6 @@ class PerfPredictorTabHelper : public content::WebContentsObserver,
 
  private:
   friend class content::WebContentsUserData<PerfPredictorTabHelper>;
-  SessionID tab_id_;
   int64_t navigation_id_;
   GURL main_frame_url_;
   BandwidthSavingsPredictor* bandwidth_predictor_;

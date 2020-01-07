@@ -5,17 +5,10 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
-#include "base/memory/singleton.h"
-#include "chrome/browser/profiles/profile.h"
-#include "chrome/browser/sessions/session_tab_helper.h"
-#if !defined(OS_ANDROID)
-#include "chrome/browser/ui/browser.h"
-#include "chrome/browser/ui/browser_list.h"
-#include "chrome/browser/ui/tabs/tab_strip_model.h"
-#endif
 #include "components/prefs/pref_service.h"
 #include "components/prefs/pref_registry_simple.h"
-#include "content/public/browser/navigation_entry.h"
+#include "components/user_prefs/user_prefs.h"
+#include "content/public/browser/browser_context.h"
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/web_contents.h"
@@ -25,8 +18,6 @@
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "brave/components/brave_perf_predictor/browser/third_parties.h"
 
-using content::ResourceType;
-using base::Singleton;
 using content::WebContents;
 
 namespace brave_perf_predictor {
@@ -35,15 +26,8 @@ class ThirdPartyExtractor;
 
 PerfPredictorTabHelper::PerfPredictorTabHelper(
     content::WebContents* web_contents)
-    : WebContentsObserver(web_contents),
-      tab_id_(SessionTabHelper::IdForTab(web_contents)) {
-  if (!tab_id_.is_valid()) {
-    return;
-  }
-
-  Profile* profile = Profile::FromBrowserContext(
-    web_contents->GetBrowserContext());
-  if (!profile || profile->IsOffTheRecord()) {
+    : WebContentsObserver(web_contents) {
+  if (web_contents->GetBrowserContext()->IsOffTheRecord()) {
     return;
   }
 
@@ -79,8 +63,7 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
   // Reset predictor state when we're committed to this navigation
   bandwidth_predictor_->Reset();
   navigation_id_ = handle->GetNavigationId();
-  VLOG(2) << tab_id_
-    << " committed navigation ID " << navigation_id_
+  VLOG(2) << " committed navigation ID " << navigation_id_
     << " to " << handle->GetURL().GetContent();
 }
 
@@ -99,10 +82,8 @@ void PerfPredictorTabHelper::RecordSaving() {
   if (bandwidth_predictor_ && web_contents()) {
     uint64_t saving = (uint64_t)bandwidth_predictor_->predict();
     if (saving > 0) {
-      PrefService* prefs = Profile::FromBrowserContext(
-        web_contents()->GetBrowserContext())->
-        GetOriginalProfile()->
-        GetPrefs();
+      PrefService* prefs = user_prefs::UserPrefs::Get(
+        web_contents()->GetBrowserContext());
 
       VLOG(2) << "Store bandwidth saving of " << saving << " Bytes to prefs";
       prefs->SetUint64(
