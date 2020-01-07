@@ -6,28 +6,31 @@ source_set("browser") {
   ]
 
   sources = [
-    "predictor.h",
-    "predictor.cc",
-    "predictor_parameters.h",
-    "third_party_extractor.h",
-    "third_party_extractor.cc",
-    "bandwidth_savings_predictor.h",
     "bandwidth_savings_predictor.cc",
-    "perf_predictor_tab_helper.cc",
-    "perf_predictor_tab_helper.h",
+    "bandwidth_savings_predictor.h",
     "perf_predictor_page_metrics_observer.cc",
     "perf_predictor_page_metrics_observer.h",
+    "perf_predictor_tab_helper.cc",
+    "perf_predictor_tab_helper.h",
+    "predictor.cc",
+    "predictor.h",
+    "predictor_parameters.h",
+    "third_party_extractor.cc",
+    "third_party_extractor.h",
   ]
 
   deps = [
     "//base",
+    "//brave/vendor/bat-native-rapidjson",
     "//components/page_load_metrics/browser",
     "//components/page_load_metrics/common",
+    "//components/prefs",
     "//components/sessions",
     "//content/public/browser",
     "//content/public/common",
     "//net/base/registry_controlled_domains",
+    "//services/metrics/public/cpp:metrics_cpp"
     "//third_party/re2",
-    "//brave/vendor/bat-native-rapidjson",
+    "//url"
   ]
 }
