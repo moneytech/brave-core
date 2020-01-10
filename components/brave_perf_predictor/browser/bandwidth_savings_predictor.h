@@ -9,10 +9,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
 #include "content/public/common/resource_load_info.mojom.h"
-
-#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 
 namespace brave_perf_predictor {
 

@@ -23,7 +23,6 @@ source_set("browser") {
 
   deps = [
     "//base",
-    "//brave/vendor/bat-native-rapidjson",
     "//components/page_load_metrics/browser",
     "//components/page_load_metrics/common",
     "//components/prefs",

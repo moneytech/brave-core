@@ -6,10 +6,9 @@
 #include <fstream>
 #include <streambuf>
 
-#include "testing/gtest/include/gtest/gtest.h"
 #include "base/files/file_path.h"
-
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "testing/gtest/include/gtest/gtest.h"
 
 namespace brave_perf_predictor {
 

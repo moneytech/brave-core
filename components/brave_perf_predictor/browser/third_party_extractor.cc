@@ -7,11 +7,8 @@
 
 #include "base/logging.h"
 #include "base/values.h"
+#include "base/json/json_reader.h"
 #include "third_party/re2/src/re2/re2.h"
-#include "rapidjson/document.h"
-#include "rapidjson/error/en.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
 
 namespace brave_perf_predictor {
 
@@ -42,42 +39,59 @@ std::string get_root_domain(const std::string &domain) {
 ThirdPartyExtractor::ThirdPartyExtractor() = default;
 
 bool ThirdPartyExtractor::load_entities(const std::string& entities) {
-  rapidjson::Document document;
-  document.Parse(entities.c_str());
+  base::Optional<base::Value> document = base::JSONReader::Read(entities);
 
-  if (document.HasParseError()) {
+  if (!document || !document->is_list()) {
     return false;
   }
 
-  if (!document.IsArray()) {
+  base::ListValue* entities_parsed = nullptr;
+  if (!document->GetAsList(&entities_parsed)) {
     return false;
   }
 
-  for (rapidjson::SizeType i = 0; i < document.Size(); i++) {
-    const std::string entity_name = document[i]["name"].GetString();
-    const rapidjson::Value& entity_domains = document[i]["domains"];
-    if (!entity_domains.IsArray()) {
+  for (auto& entity : *entities_parsed) {
+    base::DictionaryValue* entity_dict = nullptr;
+    if (!entity.GetAsDictionary(&entity_dict)) {
       continue;
     }
-    for (rapidjson::SizeType d = 0; d < entity_domains.Size(); d++) {
-      auto* entity_domain = entity_domains[d].GetString();
-      auto entity_entry = entity_by_domain_.find(entity_domain);
+    auto* entity_name = entity_dict->FindKey("name");
+    auto* entity_domains = entity_dict->FindKey("domains");
+    if (!entity_name || !entity_domains) {
+      continue;
+    }
+    std::string entity_name_string;
+    if (!entity_name->GetAsString(&entity_name_string)) {
+      continue;
+    }
+    base::ListValue* entity_domains_list = nullptr;
+    if (!entity_domains->GetAsList(&entity_domains_list)) {
+      continue;
+    }
+    for (auto& entity_domain : *entity_domains_list) {
+      std::string entity_domain_string;
+      if (!entity_domain.GetAsString(&entity_domain_string)) {
+        continue;
+      }
+
+      auto entity_entry = entity_by_domain_.find(entity_domain_string);
       if (entity_entry != entity_by_domain_.end()) {
-        LOG(ERROR) << "Duplicate domain " << entity_domain;
+        LOG(ERROR) << "Duplicate domain " << entity_domain_string;
       } else {
-        entity_by_domain_.emplace(entity_domain, entity_name);
-        auto root_domain = get_root_domain(entity_domain);
+        entity_by_domain_.emplace(entity_domain_string, entity_name_string);
+        auto root_domain = get_root_domain(entity_domain_string);
         
         auto root_entity_entry = entity_by_root_domain_.find(root_domain);
-        if (root_entity_entry != entity_by_root_domain_.end() && root_entity_entry->second != entity_name) {
+        if (root_entity_entry != entity_by_root_domain_.end() && root_entity_entry->second != entity_name_string) {
           // If there is a clash at root domain level, neither mapping is correct
           entity_by_root_domain_.erase(root_entity_entry);
         } else {
-          entity_by_root_domain_.emplace(root_domain, entity_name);
+          entity_by_root_domain_.emplace(root_domain, entity_name_string);
         }
       }
     }
   }
+
   initialized_ = true;
 
   return true;

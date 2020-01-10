@@ -9,6 +9,9 @@
 #include <string>
 
 #include "base/macros.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_p3a.h"
+#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
 #include "components/prefs/pref_registry_simple.h"
 #include "content/public/browser/navigation_handle.h"
@@ -19,10 +22,6 @@
 #include "content/public/common/resource_load_info.mojom.h"
 #include "url/gurl.h"
 
-#include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
-#include "brave/components/brave_perf_predictor/browser/perf_predictor_p3a.h"
-
 namespace brave_perf_predictor {
 
 class PerfPredictorTabHelper : public content::WebContentsObserver,
@@ -32,7 +31,7 @@ class PerfPredictorTabHelper : public content::WebContentsObserver,
   ~PerfPredictorTabHelper() override;
   void OnBlockedSubresource(const std::string& subresource);
   void OnPageLoadTimingUpdated(
-    const page_load_metrics::mojom::PageLoadTiming& timing);
+      const page_load_metrics::mojom::PageLoadTiming& timing);
   static void RegisterProfilePrefs(PrefRegistrySimple* registry);
 
  protected:

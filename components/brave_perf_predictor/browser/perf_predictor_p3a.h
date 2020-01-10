@@ -11,7 +11,6 @@
 
 #include "base/macros.h"
 #include "base/timer/timer.h"
-
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_p3a.h"
 
 class PrefRegistrySimple;
