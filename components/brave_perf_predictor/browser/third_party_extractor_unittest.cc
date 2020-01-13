@@ -12,7 +12,7 @@
 
 namespace brave_perf_predictor {
 
-const std::string test_mapping = R"(
+const char test_mapping[] = R"(
 [
 {
     "name":"Google Analytics",
@@ -73,8 +73,6 @@ class ThirdPartyExtractorTest : public ::testing::Test {
 
     return value;
   }
-
-
 };
 
 TEST_F(ThirdPartyExtractorTest, HandlesEmptyJSON) {
@@ -106,7 +104,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile("entities-httparchive-nostats.json");
   extractor->load_entities(dataset);
-  
+
   auto entity = extractor->get_entity("https://google-analytics.com/ga.js");
   ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
@@ -119,7 +117,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
   auto entity = extractor->get_entity("google-analytics.com");
   ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
-} 
+}
 
 TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
@@ -138,4 +136,4 @@ TEST_F(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
   EXPECT_TRUE(!entity.has_value());
 }
 
-} // namespace brave_perf_predictor
+}  // namespace brave_perf_predictor

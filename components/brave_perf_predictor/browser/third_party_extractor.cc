@@ -16,7 +16,8 @@ RE2 DOMAIN_IN_URL_REGEX(":\\/\\/(.*?)(\\/|$)");
 RE2 DOMAIN_CHARACTERS("([a-z0-9.-]+\\.[a-z0-9]+)");
 RE2 ROOT_DOMAIN_REGEX("([^.]+\\.([^.]+|(gov|com|co|ne)\\.\\w{2})$)");
 
-base::Optional<std::string> get_domain_from_origin_or_url(const std::string &origin_or_url) {
+base::Optional<std::string> get_domain_from_origin_or_url(
+    const std::string &origin_or_url) {
   std::string domain;
   if (RE2::PartialMatch(origin_or_url, DOMAIN_IN_URL_REGEX, &domain)) {
     return domain;
@@ -85,10 +86,11 @@ bool ThirdPartyExtractor::load_entities(const std::string& entities) {
       } else {
         entity_by_domain_.emplace(entity_domain_string, entity_name_string);
         auto root_domain = get_root_domain(entity_domain_string);
-        
+
         auto root_entity_entry = entity_by_root_domain_.find(root_domain);
-        if (root_entity_entry != entity_by_root_domain_.end() && root_entity_entry->second != entity_name_string) {
-          // If there is a clash at root domain level, neither mapping is correct
+        if (root_entity_entry != entity_by_root_domain_.end() &&
+            root_entity_entry->second != entity_name_string) {
+          // If there is a clash at root domain level, neither is correct
           entity_by_root_domain_.erase(root_entity_entry);
         } else {
           entity_by_root_domain_.emplace(root_domain, entity_name_string);
@@ -108,14 +110,16 @@ ThirdPartyExtractor::ThirdPartyExtractor(const std::string& entities) {
 
 ThirdPartyExtractor::~ThirdPartyExtractor() = default;
 
-//static
+// static
 ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
   return base::Singleton<ThirdPartyExtractor>::get();
 }
 
 
-base::Optional<std::string> ThirdPartyExtractor::get_entity(const std::string& origin_or_url) {
-  base::Optional<std::string> domain = get_domain_from_origin_or_url(origin_or_url);
+base::Optional<std::string> ThirdPartyExtractor::get_entity(
+    const std::string& origin_or_url) {
+  base::Optional<std::string> domain =
+    get_domain_from_origin_or_url(origin_or_url);
   if (domain.has_value()) {
     auto domain_entry = entity_by_domain_.find(domain.value());
     if (domain_entry != entity_by_domain_.end()) {
@@ -132,4 +136,4 @@ base::Optional<std::string> ThirdPartyExtractor::get_entity(const std::string& o
   return base::nullopt;
 }
 
-}
+}  // namespace brave_perf_predictor

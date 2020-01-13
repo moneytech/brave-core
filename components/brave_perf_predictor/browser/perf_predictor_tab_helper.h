@@ -7,6 +7,7 @@
 #define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_PERF_PREDICTOR_TAB_HELPER_H_
 
 #include <string>
+#include <memory>
 
 #include "base/macros.h"
 #include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
@@ -55,8 +56,8 @@ class PerfPredictorTabHelper : public content::WebContentsObserver,
   friend class content::WebContentsUserData<PerfPredictorTabHelper>;
   int64_t navigation_id_;
   GURL main_frame_url_;
-  BandwidthSavingsPredictor* bandwidth_predictor_;
-  BandwidthSavingsTracker* bandwidth_tracker_;
+  std::unique_ptr<BandwidthSavingsPredictor> bandwidth_predictor_;
+  std::unique_ptr<BandwidthSavingsTracker> bandwidth_tracker_;
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();
   DISALLOW_COPY_AND_ASSIGN(PerfPredictorTabHelper);

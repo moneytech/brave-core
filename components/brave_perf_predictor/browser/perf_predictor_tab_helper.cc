@@ -27,19 +27,12 @@ PerfPredictorTabHelper::PerfPredictorTabHelper(
   if (!extractor->is_initialized()) {
     extractor->load_entities(static_third_party_config);
   }
-  bandwidth_predictor_ = new BandwidthSavingsPredictor(extractor);
-  bandwidth_tracker_ = new BandwidthSavingsTracker(
+  bandwidth_predictor_ = std::make_unique<BandwidthSavingsPredictor>(extractor);
+  bandwidth_tracker_ = std::make_unique<BandwidthSavingsTracker>(
     g_browser_process->local_state());
 }
 
-PerfPredictorTabHelper::~PerfPredictorTabHelper() {
-  if (bandwidth_predictor_) {
-    delete bandwidth_predictor_;
-  }
-  if (bandwidth_tracker_) {
-    delete bandwidth_tracker_;
-  }
-}
+PerfPredictorTabHelper::~PerfPredictorTabHelper() = default;
 
 void PerfPredictorTabHelper::DidStartNavigation(
     content::NavigationHandle* handle) {
@@ -61,9 +54,6 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
   if (bandwidth_predictor_) {
     bandwidth_predictor_->Reset();
   }
-  navigation_id_ = handle->GetNavigationId();
-  VLOG(2) << "Committed navigation ID " << navigation_id_
-    << " to " << handle->GetURL().GetContent();
 }
 
 void PerfPredictorTabHelper::DidFinishNavigation(
@@ -82,10 +72,13 @@ void PerfPredictorTabHelper::RecordSaving() {
   if (bandwidth_predictor_ && web_contents()) {
     uint64_t saving = (uint64_t)bandwidth_predictor_->predict();
     if (saving > 0) {
-      PrefService* prefs = user_prefs::UserPrefs::Get(
-        web_contents()->GetBrowserContext());
+      // BrowserContenxt can be null in tests
+      auto* browser_context = web_contents()->GetBrowserContext();
+      if (!browser_context) {
+        return;
+      }
+      PrefService* prefs = user_prefs::UserPrefs::Get(browser_context);
 
-      VLOG(2) << "Store bandwidth saving of " << saving << " Bytes to prefs";
       if (prefs) {
         prefs->SetUint64(
           kBandwidthSavedBytes,

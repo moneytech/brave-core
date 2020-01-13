@@ -31,13 +31,12 @@ class BraveSavingsPredictorTest : public ::testing::Test {
     // Code here will be called immediately after each test (right before the
     // destructor)
   }
-
 };
 
 TEST_F(BraveSavingsPredictorTest, FeatureArrayGetsPrediction) {
   std::array<double, feature_count> features{};
   double result = predict(features);
-  EXPECT_TRUE(result != 0);
+  EXPECT_NE(result, 0);
 }
 
 TEST_F(BraveSavingsPredictorTest, HandlesSpecificVectorExample) {
@@ -55,7 +54,7 @@ TEST_F(BraveSavingsPredictorTest, HandlesSpecificVectorExample) {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0       
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
   double result = brave_perf_predictor::predict(sample);
@@ -304,4 +303,4 @@ TEST_F(BraveSavingsPredictorTest, HandesSpecificFeaturemapExample) {
 }
 
 
-} // namespace brave_perf_predictor
+}  // namespace brave_perf_predictor
