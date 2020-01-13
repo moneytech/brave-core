@@ -5,7 +5,6 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
-#include "brave/browser/brave_browser_process_impl.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_perf_predictor/browser/third_parties.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
@@ -28,8 +27,9 @@ PerfPredictorTabHelper::PerfPredictorTabHelper(
     extractor->load_entities(static_third_party_config);
   }
   bandwidth_predictor_ = std::make_unique<BandwidthSavingsPredictor>(extractor);
-  bandwidth_tracker_ = std::make_unique<BandwidthSavingsTracker>(
-    g_browser_process->local_state());
+  PrefService* prefs = user_prefs::UserPrefs::Get(
+    web_contents->GetBrowserContext());
+  bandwidth_tracker_ = std::make_unique<BandwidthSavingsTracker>(prefs);
 }
 
 PerfPredictorTabHelper::~PerfPredictorTabHelper() = default;

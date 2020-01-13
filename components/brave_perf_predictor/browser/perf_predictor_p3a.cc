@@ -67,6 +67,9 @@ uint64_t SavingPermanentState::GetTotalSaving() const {
 
 void SavingPermanentState::LoadSavings() {
   DCHECK(daily_savings_.empty());
+  if (!local_state_) {
+    return;
+  }
   const base::ListValue* list =
       local_state_->GetList(kSavingsDailyListPrefName);
   if (!list) {
