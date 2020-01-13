@@ -127,6 +127,7 @@ void BandwidthSavingsTracker::RecordSaving(uint64_t saving) {
   if (saving > 0) {
     auto* permanent_state = new SavingPermanentState(local_state_);
     permanent_state->AddSaving(saving);
+    delete permanent_state;
   }
 }
 

@@ -39,17 +39,22 @@ std::string get_root_domain(const std::string &domain) {
 ThirdPartyExtractor::ThirdPartyExtractor() = default;
 
 bool ThirdPartyExtractor::load_entities(const std::string& entities) {
-  base::Optional<base::Value> document = base::JSONReader::Read(entities);
+  // Reset previous mappings
+  entity_by_domain_.clear();
+  entity_by_root_domain_.clear();
 
+  // Parse the JSON
+  base::Optional<base::Value> document = base::JSONReader::Read(entities);
   if (!document || !document->is_list()) {
+    LOG(ERROR) << "Bad Document";
     return false;
   }
-
   base::ListValue* entities_parsed = nullptr;
   if (!document->GetAsList(&entities_parsed)) {
     return false;
   }
 
+  // Collect the mappings
   for (auto& entity : *entities_parsed) {
     base::DictionaryValue* entity_dict = nullptr;
     if (!entity.GetAsDictionary(&entity_dict)) {

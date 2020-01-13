@@ -36,11 +36,14 @@ PerfPredictorTabHelper::~PerfPredictorTabHelper() {
   if (bandwidth_predictor_) {
     delete bandwidth_predictor_;
   }
+  if (bandwidth_tracker_) {
+    delete bandwidth_tracker_;
+  }
 }
 
 void PerfPredictorTabHelper::DidStartNavigation(
     content::NavigationHandle* handle) {
-  if (!handle->IsInMainFrame() || handle->IsDownload()) {
+  if (!handle || !handle->IsInMainFrame() || handle->IsDownload()) {
     return;
   }
   // Gather prediction of the _previous_ navigation
@@ -51,11 +54,13 @@ void PerfPredictorTabHelper::DidStartNavigation(
 
 void PerfPredictorTabHelper::ReadyToCommitNavigation(
     content::NavigationHandle* handle) {
-  if (!handle->IsInMainFrame() || handle->IsDownload()) {
+  if (!handle || !handle->IsInMainFrame() || handle->IsDownload()) {
     return;
   }
   // Reset predictor state when we're committed to this navigation
-  bandwidth_predictor_->Reset();
+  if (bandwidth_predictor_) {
+    bandwidth_predictor_->Reset();
+  }
   navigation_id_ = handle->GetNavigationId();
   VLOG(2) << "Committed navigation ID " << navigation_id_
     << " to " << handle->GetURL().GetContent();
@@ -63,7 +68,8 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
 
 void PerfPredictorTabHelper::DidFinishNavigation(
     content::NavigationHandle* handle) {
-  if (!handle->IsInMainFrame() ||
+  if (!handle ||
+      !handle->IsInMainFrame() ||
       !handle->HasCommitted() ||
       handle->IsDownload()) {
     return;
@@ -80,10 +86,14 @@ void PerfPredictorTabHelper::RecordSaving() {
         web_contents()->GetBrowserContext());
 
       VLOG(2) << "Store bandwidth saving of " << saving << " Bytes to prefs";
-      prefs->SetUint64(
-        kBandwidthSavedBytes,
-        prefs->GetUint64(kBandwidthSavedBytes) + saving);
-      bandwidth_tracker_->RecordSaving(saving);
+      if (prefs) {
+        prefs->SetUint64(
+          kBandwidthSavedBytes,
+          prefs->GetUint64(kBandwidthSavedBytes) + saving);
+      }
+      if (bandwidth_tracker_) {
+        bandwidth_tracker_->RecordSaving(saving);
+      }
     }
   }
 }

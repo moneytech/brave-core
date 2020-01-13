@@ -31,7 +31,7 @@ const std::string test_mapping = R"(
 
 // Test data directory, relative to source root
 const base::FilePath::CharType kTestDataRelativePath[] =
-  FILE_PATH_LITERAL("components/brave_perf_predictor/resources");
+  FILE_PATH_LITERAL("brave/components/brave_perf_predictor/resources");
 
 
 class ThirdPartyExtractorTest : public ::testing::Test {
@@ -108,7 +108,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
   extractor->load_entities(dataset);
   
   auto entity = extractor->get_entity("https://google-analytics.com/ga.js");
-  EXPECT_TRUE(entity.has_value());
+  ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
 }
 
@@ -117,7 +117,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
   auto dataset = LoadFile("entities-httparchive-nostats.json");
   extractor->load_entities(dataset);
   auto entity = extractor->get_entity("google-analytics.com");
-  EXPECT_TRUE(entity.has_value());
+  ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
 } 
 
@@ -126,7 +126,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
   auto dataset = LoadFile("entities-httparchive-nostats.json");
   extractor->load_entities(dataset);
   auto entity = extractor->get_entity("https://test.m.facebook.com");
-  EXPECT_TRUE(entity.has_value());
+  ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Facebook");
 }
 

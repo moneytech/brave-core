@@ -59,7 +59,7 @@ TEST_F(BraveSavingsPredictorTest, HandlesSpecificVectorExample) {
   };
 
   double result = brave_perf_predictor::predict(sample);
-  EXPECT_EQ((int)result, 794393);
+  EXPECT_EQ((int)result / 1000, 794);   // Equal on the order of thousands
 }
 
 TEST_F(BraveSavingsPredictorTest, HandlesEmptyFeatureset) {
@@ -300,7 +300,7 @@ TEST_F(BraveSavingsPredictorTest, HandesSpecificFeaturemapExample) {
     { "resources.total.size", 238413 },
   };
   double result = predict(featuremap);
-  EXPECT_EQ((int)result, 794393);
+  EXPECT_EQ((int)result / 1000, 794);   // Equal on the order of thousands
 }
 
 
