@@ -28,8 +28,10 @@ PerfPredictorTabHelper::PerfPredictorTabHelper(
     extractor->load_entities(static_third_party_config);
   }
   bandwidth_predictor_ = std::make_unique<BandwidthSavingsPredictor>(extractor);
-  bandwidth_tracker_ = std::make_unique<BandwidthSavingsTracker>(
-    user_prefs::UserPrefs::Get(web_contents->GetBrowserContext()));
+#if BUILDFLAG(BRAVE_P3A_ENABLED)
+  bandwidth_tracker_ = std::make_unique<P3ABandwidthSavingsTracker>(
+      user_prefs::UserPrefs::Get(web_contents->GetBrowserContext()));
+#endif
 }
 
 PerfPredictorTabHelper::~PerfPredictorTabHelper() = default;
@@ -59,9 +61,7 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
 
 void PerfPredictorTabHelper::DidFinishNavigation(
     content::NavigationHandle* handle) {
-  if (!handle ||
-      !handle->IsInMainFrame() ||
-      !handle->HasCommitted() ||
+  if (!handle || !handle->IsInMainFrame() || !handle->HasCommitted() ||
       handle->IsDownload()) {
     return;
   }
@@ -82,13 +82,14 @@ void PerfPredictorTabHelper::RecordSaving() {
       PrefService* prefs = user_prefs::UserPrefs::Get(browser_context);
 
       if (prefs) {
-        prefs->SetUint64(
-          kBandwidthSavedBytes,
-          prefs->GetUint64(kBandwidthSavedBytes) + saving);
+        prefs->SetUint64(kBandwidthSavedBytes,
+                         prefs->GetUint64(kBandwidthSavedBytes) + saving);
       }
+#if BUILDFLAG(BRAVE_P3A_ENABLED)
       if (bandwidth_tracker_) {
         bandwidth_tracker_->RecordSaving(saving);
       }
+#endif
     }
   }
 }
@@ -98,8 +99,8 @@ void PerfPredictorTabHelper::ResourceLoadComplete(
     const content::GlobalRequestID& request_id,
     const content::mojom::ResourceLoadInfo& resource_load_info) {
   if (render_frame_host && bandwidth_predictor_) {
-    bandwidth_predictor_->OnResourceLoadComplete(
-      main_frame_url_, resource_load_info);
+    bandwidth_predictor_->OnResourceLoadComplete(main_frame_url_,
+                                                 resource_load_info);
   }
 }
 

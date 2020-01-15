@@ -122,6 +122,7 @@ source_set("browser_process") {
     "//base",
     "//brave/browser/net",
     "//brave/browser/notifications",
+    "//brave/browser/page_load_metrics",
     "//brave/browser/tor:buildflags",
     "//brave/browser/translate/buildflags",
     "//brave/common",
