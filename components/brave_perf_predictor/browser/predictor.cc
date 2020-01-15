@@ -10,6 +10,8 @@
 #include <utility>
 #include <algorithm>
 
+#include "base/logging.h"
+
 namespace brave_perf_predictor {
 
 bool standardise_feats_no_outliers(
@@ -19,11 +21,14 @@ bool standardise_feats_no_outliers(
   for (unsigned int i = 0; i < standardise_feat_count; i++) {
     features->at(i) = (features->at(i) - means[i])/scale[i];
   }
-  double outlier_threshold = 3;
+  double outlier_threshold = 6;
   for (unsigned int i = 0; i < standardise_feat_count; i++) {
     if (features->at(i) > outlier_threshold ||
-        features->at(i) < -outlier_threshold)
+        features->at(i) < -outlier_threshold) {
+      VLOG(2) << "Outlier feature " << feature_sequence.at(i)
+        << " with value " << features->at(i);
       return true;
+    }
   }
   return false;
 }
@@ -38,6 +43,7 @@ double predict(const std::array<double, feature_count> &features) {
     standardise_feat_means,
     standardise_feat_scale);
   if (has_outliers) {
+    VLOG(2) << "Feature set has outliers, return 0";
     return 0;
   }
 

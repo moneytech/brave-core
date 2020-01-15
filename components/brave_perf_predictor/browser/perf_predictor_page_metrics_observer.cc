@@ -32,6 +32,7 @@ PerfPredictorPageMetricsObserver::OnCommit(
   observer_ = PerfPredictorTabHelper::FromWebContents(
         navigation_handle->GetWebContents());
   if (!observer_) {
+    VLOG(2) << navigation_id_ << " could not get PerfPredictorTabHelper";
     return STOP_OBSERVING;
   }
   return CONTINUE_OBSERVING;
@@ -51,8 +52,10 @@ void PerfPredictorPageMetricsObserver::OnFirstContentfulPaintInPage(
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
+  } else if (VLOG_IS_ON(2)) {
+    VLOG(2) << "PerfPredictorTabHelper not ready for timing updates";
   }
-  VLOG(2) << navigation_id_ << " paint timing "
+  VLOG(3) << navigation_id_ << " paint timing "
     << "NavigationToFirstContentfulPaint "
     << timing.paint_timing->first_contentful_paint.value();
 }
@@ -63,8 +66,10 @@ void PerfPredictorPageMetricsObserver::
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
+  } else if (VLOG_IS_ON(2)) {
+    VLOG(2) << "PerfPredictorTabHelper not ready for timing updates";
   }
-  VLOG(2) << navigation_id_ << " paint timing "
+  VLOG(3) << navigation_id_ << " paint timing "
     << "NavigationToFirstMeaningfulPaint "
     << timing.paint_timing->first_meaningful_paint.value();
 }
@@ -74,8 +79,10 @@ void PerfPredictorPageMetricsObserver::OnLoadEventStart(
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
+  } else if (VLOG_IS_ON(2)) {
+    VLOG(2) << "PerfPredictorTabHelper not ready for timing updates";
   }
-  VLOG(2) << navigation_id_ << " document timing "
+  VLOG(3) << navigation_id_ << " document timing "
     << "NavigationToLoadEventFired "
     << timing.document_timing->load_event_start.value();
 }

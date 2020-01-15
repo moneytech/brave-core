@@ -18,6 +18,7 @@ namespace brave_perf_predictor {
 PerfPredictorTabHelper::PerfPredictorTabHelper(
     content::WebContents* web_contents)
     : WebContentsObserver(web_contents) {
+  VLOG(3) << "Created PerfPredictorTabHelper";
   if (web_contents->GetBrowserContext()->IsOffTheRecord()) {
     return;
   }
@@ -49,6 +50,7 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
   if (!handle || !handle->IsInMainFrame() || handle->IsDownload()) {
     return;
   }
+  VLOG(3) << "Ready to commit navigation";
   // Reset predictor state when we're committed to this navigation
   if (bandwidth_predictor_) {
     bandwidth_predictor_->Reset();
@@ -70,6 +72,7 @@ void PerfPredictorTabHelper::DidFinishNavigation(
 void PerfPredictorTabHelper::RecordSaving() {
   if (bandwidth_predictor_ && web_contents()) {
     uint64_t saving = (uint64_t)bandwidth_predictor_->predict();
+    VLOG(3) << "Saving computed bw saving = " << saving;
     if (saving > 0) {
       // BrowserContenxt can be null in tests
       auto* browser_context = web_contents()->GetBrowserContext();
@@ -122,6 +125,7 @@ void PerfPredictorTabHelper::WebContentsDestroyed() {
 
 void PerfPredictorTabHelper::OnPageLoadTimingUpdated(
     const page_load_metrics::mojom::PageLoadTiming& timing) {
+  VLOG(3) << "Page Load Timing updated";
   if (bandwidth_predictor_) {
     bandwidth_predictor_->OnPageLoadTimingUpdated(timing);
   }
