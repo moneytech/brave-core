@@ -8,8 +8,6 @@
 #include "../../../../../chrome/browser/page_load_metrics/page_load_metrics_initialize.cc"
 #undef InitializePageLoadMetricsForWebContents
 
-// #include "brave/browser/page_load_metrics/brave_page_load_metrics_embedder.h"
-
 #include "brave/components/brave_perf_predictor/browser/buildflags/buildflags.h"
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
@@ -54,9 +52,10 @@ void BravePageLoadMetricsEmbedder::RegisterEmbedderObservers(
 
 void InitializePageLoadMetricsForWebContents(
     content::WebContents* web_contents) {
-  // Change this method? consider to modify the peer in
+  // TODO(bug https://github.com/brave/brave-browser/issues/7784)
+  // change
   // android_webview/browser/page_load_metrics/page_load_metrics_initialize.cc
-  // as well.
+  // as well to register Page Load Metrics Observers
   page_load_metrics::MetricsWebContentsObserver::CreateForWebContents(
       web_contents,
       std::make_unique<BravePageLoadMetricsEmbedder>(web_contents));
