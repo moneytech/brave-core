@@ -40,7 +40,7 @@ class PerfPredictorTabHelper
   static void RegisterProfilePrefs(PrefRegistrySimple* registry);
 
  protected:
-  void RecordSaving();
+  void RecordSavings();
 
   // content::WebContentsObserver overrides.
   void DidStartNavigation(

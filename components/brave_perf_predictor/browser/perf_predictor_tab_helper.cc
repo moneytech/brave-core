@@ -5,9 +5,9 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
-#include "brave/common/pref_names.h"
 #include "brave/components/brave_perf_predictor/browser/third_parties.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "brave/components/brave_perf_predictor/common/pref_names.h"
 #include "components/prefs/pref_service.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
@@ -43,7 +43,7 @@ void PerfPredictorTabHelper::DidStartNavigation(
   }
   // Gather prediction of the _previous_ navigation
   if (navigation_id_ != 0) {
-    RecordSaving();
+    RecordSavings();
   }
 }
 
@@ -69,11 +69,11 @@ void PerfPredictorTabHelper::DidFinishNavigation(
   main_frame_url_ = handle->GetURL();
 }
 
-void PerfPredictorTabHelper::RecordSaving() {
+void PerfPredictorTabHelper::RecordSavings() {
   if (bandwidth_predictor_ && web_contents()) {
-    uint64_t saving = (uint64_t)bandwidth_predictor_->predict();
-    VLOG(3) << "Saving computed bw saving = " << saving;
-    if (saving > 0) {
+    uint64_t savings = (uint64_t)bandwidth_predictor_->predict();
+    VLOG(3) << "Saving computed bw saving = " << savings;
+    if (savings > 0) {
       // BrowserContenxt can be null in tests
       auto* browser_context = web_contents()->GetBrowserContext();
       if (!browser_context) {
@@ -82,12 +82,13 @@ void PerfPredictorTabHelper::RecordSaving() {
       PrefService* prefs = user_prefs::UserPrefs::Get(browser_context);
 
       if (prefs) {
-        prefs->SetUint64(kBandwidthSavedBytes,
-                         prefs->GetUint64(kBandwidthSavedBytes) + saving);
+        prefs->SetUint64(
+            prefs::kBandwidthSavedBytes,
+            prefs->GetUint64(prefs::kBandwidthSavedBytes) + savings);
       }
 #if BUILDFLAG(BRAVE_P3A_ENABLED)
       if (bandwidth_tracker_) {
-        bandwidth_tracker_->RecordSaving(saving);
+        bandwidth_tracker_->RecordSavings(savings);
       }
 #endif
     }
@@ -121,7 +122,7 @@ void PerfPredictorTabHelper::DidAttachInterstitialPage() {
 
 void PerfPredictorTabHelper::WebContentsDestroyed() {
   // Run a prediction when Web Contents get destroyed (e.g. tab/window closed)
-  RecordSaving();
+  RecordSavings();
 }
 
 void PerfPredictorTabHelper::OnPageLoadTimingUpdated(
@@ -135,7 +136,7 @@ void PerfPredictorTabHelper::OnPageLoadTimingUpdated(
 // static
 void PerfPredictorTabHelper::RegisterProfilePrefs(
     PrefRegistrySimple* registry) {
-  registry->RegisterUint64Pref(kBandwidthSavedBytes, 0);
+  registry->RegisterUint64Pref(prefs::kBandwidthSavedBytes, 0);
 }
 
 WEB_CONTENTS_USER_DATA_KEY_IMPL(PerfPredictorTabHelper)

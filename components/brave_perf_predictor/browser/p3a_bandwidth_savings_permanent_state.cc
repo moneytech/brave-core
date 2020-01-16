@@ -10,6 +10,7 @@
 
 #include "base/logging.h"
 #include "base/metrics/histogram_macros.h"
+#include "brave/components/brave_perf_predictor/common/pref_names.h"
 #include "components/prefs/pref_registry_simple.h"
 #include "components/prefs/pref_service.h"
 #include "components/prefs/scoped_user_pref_update.h"
@@ -27,7 +28,7 @@ P3ABandwidthSavingsPermanentState::P3ABandwidthSavingsPermanentState(
 P3ABandwidthSavingsPermanentState::~P3ABandwidthSavingsPermanentState() =
     default;
 
-void P3ABandwidthSavingsPermanentState::AddSaving(uint64_t delta) {
+void P3ABandwidthSavingsPermanentState::AddSavings(uint64_t delta) {
   base::Time now_midnight = base::Time::Now().LocalMidnight();
   base::Time last_saved_midnight;
 
@@ -49,7 +50,7 @@ void P3ABandwidthSavingsPermanentState::AddSaving(uint64_t delta) {
   SaveSavings();
 }
 
-uint64_t P3ABandwidthSavingsPermanentState::GetTotalSaving() const {
+uint64_t P3ABandwidthSavingsPermanentState::GetTotalSavings() const {
   // We record only saving for last N days.
   const base::Time n_days_ago =
       base::Time::Now() - base::TimeDelta::FromDays(kNumOfSavedDailyUptimes);
@@ -68,7 +69,8 @@ uint64_t P3ABandwidthSavingsPermanentState::GetTotalSaving() const {
 
 void P3ABandwidthSavingsPermanentState::LoadSavings() {
   DCHECK(daily_savings_.empty());
-  const base::ListValue* list = user_prefs_->GetList(kBandwidthSavedDailyBytes);
+  const base::ListValue* list =
+      user_prefs_->GetList(prefs::kBandwidthSavedDailyBytes);
   if (!list) {
     return;
   }
@@ -90,7 +92,7 @@ void P3ABandwidthSavingsPermanentState::SaveSavings() {
   DCHECK(!daily_savings_.empty());
   DCHECK_LE(daily_savings_.size(), kNumOfSavedDailyUptimes);
 
-  ListPrefUpdate update(user_prefs_, kBandwidthSavedDailyBytes);
+  ListPrefUpdate update(user_prefs_, prefs::kBandwidthSavedDailyBytes);
   base::ListValue* list = update.Get();
   list->Clear();
   for (const auto& u : daily_savings_) {
@@ -105,7 +107,7 @@ void P3ABandwidthSavingsPermanentState::RecordP3A() {
   int answer = 0;
   if (daily_savings_.size() == kNumOfSavedDailyUptimes) {
     const uint64_t total =
-        static_cast<uint64_t>(GetTotalSaving() / 1024 / 1024);
+        static_cast<uint64_t>(GetTotalSavings() / 1024 / 1024);
     DCHECK_GE(total, 0ULL);
     int counter = 0;
     for (auto* it = BandwidthSavingsBuckets.begin();
