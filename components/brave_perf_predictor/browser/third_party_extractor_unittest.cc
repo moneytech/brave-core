@@ -9,6 +9,7 @@
 #include <streambuf>
 
 #include "base/files/file_path.h"
+#include "base/files/file_util.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
 namespace brave_perf_predictor {
@@ -54,21 +55,21 @@ class ThirdPartyExtractorTest : public ::testing::Test {
   }
 
   // Objects declared here can be used by all tests in the test case
-  std::string LoadFile(const std::string& filename) {
-    auto path = base::FilePath(
-        FILE_PATH_LITERAL("brave/components/brave_perf_predictor/resources"));
-    path = path.AppendASCII(filename);
+  std::string LoadFile() {
+    auto path =
+        base::FilePath(FILE_PATH_LITERAL("brave"))
+            .Append(FILE_PATH_LITERAL("components"))
+            .Append(FILE_PATH_LITERAL("brave_perf_predictor"))
+            .Append(FILE_PATH_LITERAL("resources"))
+            .Append(FILE_PATH_LITERAL("entities-httparchive-nostats.json"));
 
-    std::ifstream ifs(path.value().c_str());
-    if (ifs.fail()) {
+    std::string value;
+    bool read = ReadFileToString(path, &value);
+    if (read) {
+      return value;
+    } else {
       return "";
     }
-
-    std::stringstream stream;
-    stream << ifs.rdbuf();
-    std::string value = stream.str();
-
-    return value;
   }
 };
 
@@ -92,14 +93,14 @@ TEST_F(ThirdPartyExtractorTest, HandlesInvalidJSON) {
 
 TEST_F(ThirdPartyExtractorTest, HandlesFullDataset) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  auto dataset = LoadFile("entities-httparchive-nostats.json");
+  auto dataset = LoadFile();
   bool parsed = extractor->load_entities(dataset);
   EXPECT_TRUE(parsed);
 }
 
 TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  auto dataset = LoadFile("entities-httparchive-nostats.json");
+  auto dataset = LoadFile();
   extractor->load_entities(dataset);
 
   auto entity = extractor->get_entity("https://google-analytics.com/ga.js");
@@ -109,7 +110,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
 
 TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  auto dataset = LoadFile("entities-httparchive-nostats.json");
+  auto dataset = LoadFile();
   extractor->load_entities(dataset);
   auto entity = extractor->get_entity("google-analytics.com");
   ASSERT_TRUE(entity.has_value());
@@ -118,7 +119,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
 
 TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  auto dataset = LoadFile("entities-httparchive-nostats.json");
+  auto dataset = LoadFile();
   extractor->load_entities(dataset);
   auto entity = extractor->get_entity("https://test.m.facebook.com");
   ASSERT_TRUE(entity.has_value());
@@ -127,7 +128,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
 
 TEST_F(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  auto dataset = LoadFile("entities-httparchive-nostats.json");
+  auto dataset = LoadFile();
   extractor->load_entities(dataset);
   auto entity = extractor->get_entity("example.com");
   EXPECT_TRUE(!entity.has_value());
