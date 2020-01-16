@@ -259,6 +259,8 @@ void CustomizeWebUIHTMLSource(const std::string &name,
       std::string("rewards"), {
         { "adsAllowConversionTracking",  IDS_BRAVE_REWARDS_LOCAL_ADS_ALLOW_CONVERSION_TRACKING },  // NOLINT
         { "adsAllowConversionTrackingDescription",  IDS_BRAVE_REWARDS_LOCAL_ADS_ALLOW_CONVERSION_TRACKING_DESCRIPTION },  // NOLINT
+        { "adsShowOnParticipatingPublisherSites",  IDS_BRAVE_REWARDS_LOCAL_ADS_SHOW_ON_PARTICIPATING_PUBLISHER_SITES },  // NOLINT
+        { "adsShowOnParticipatingPublisherSitesDescription",  IDS_BRAVE_REWARDS_LOCAL_ADS_SHOW_ON_PARTICIPATING_PUBLISHER_SITES_DESCRIPTION },  // NOLINT
         { "adsCurrentEarnings",  IDS_BRAVE_REWARDS_LOCAL_ADS_CURRENT_EARNINGS },
         { "adsDesc",  IDS_BRAVE_REWARDS_LOCAL_ADS_DESC },
         { "adsDisabledTextOne",  IDS_BRAVE_REWARDS_LOCAL_ADS_DISABLED_TEXT_ONE },                // NOLINT

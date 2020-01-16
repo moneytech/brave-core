@@ -351,11 +351,11 @@ const std::map<std::string, uint64_t> Client::GetAdsUUIDSeen() {
 }
 
 void Client::ResetAdsUUIDSeen(
-    const std::vector<AdInfo>& ads) {
+    const CreativeAdNotifications& ads) {
   BLOG(INFO) << "Resetting seen ads";
 
   for (const auto& ad : ads) {
-    auto ad_uuid_seen = client_state_->ads_uuid_seen.find(ad.uuid);
+    auto ad_uuid_seen = client_state_->ads_uuid_seen.find(ad.creative_instance_id);
     if (ad_uuid_seen != client_state_->ads_uuid_seen.end()) {
       client_state_->ads_uuid_seen.erase(ad_uuid_seen);
     }
@@ -364,7 +364,7 @@ void Client::ResetAdsUUIDSeen(
   SaveState();
 }
 
-void Client::SetNextCheckServeAdTimestampInSeconds(
+void Client::SetNextCheckServeAdNotificationTimestampInSeconds(
     const uint64_t timestamp_in_seconds) {
   client_state_->next_check_serve_ad_timestamp_in_seconds
       = timestamp_in_seconds;
@@ -372,7 +372,7 @@ void Client::SetNextCheckServeAdTimestampInSeconds(
   SaveState();
 }
 
-uint64_t Client::GetNextCheckServeAdTimestampInSeconds() {
+uint64_t Client::GetNextCheckServeAdNotificationTimestampInSeconds() {
   return client_state_->next_check_serve_ad_timestamp_in_seconds;
 }
 

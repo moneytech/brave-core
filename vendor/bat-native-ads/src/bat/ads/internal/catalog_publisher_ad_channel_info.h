@@ -3,18 +3,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "bat/ads/internal/catalog_os_info.h"
+#ifndef BAT_ADS_INTERNAL_CATALOG_PUBLISHER_AD_CHANNEL_INFO_H_
+#define BAT_ADS_INTERNAL_CATALOG_PUBLISHER_AD_CHANNEL_INFO_H_
+
+#include <string>
 
 namespace ads {
 
-OsInfo::OsInfo() :
-    code(""),
-    name("") {}
-
-OsInfo::OsInfo(const OsInfo& info) :
-    code(info.code),
-    name(info.name) {}
-
-OsInfo::~OsInfo() {}
+struct CatalogPublisherAdChannelInfo {
+  std::string name;
+};
 
 }  // namespace ads
+
+#endif  // BAT_ADS_INTERNAL_CATALOG_PUBLISHER_AD_CHANNEL_INFO_H_
