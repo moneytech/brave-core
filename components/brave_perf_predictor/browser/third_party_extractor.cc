@@ -8,7 +8,7 @@
 #include "base/json/json_reader.h"
 #include "base/logging.h"
 #include "base/values.h"
-#include "brave/components/brave_perf_predictor/resources/grit/brave_perf_predictor_resources.h"
+#include "components/grit/brave_components_resources.h"
 #include "third_party/re2/src/re2/re2.h"
 #include "ui/base/resource/resource_bundle.h"
 

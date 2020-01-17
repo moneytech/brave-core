@@ -23,7 +23,7 @@ source_set("browser") {
   deps = [
     "//base",
     "//brave/components/brave_perf_predictor/common",
-    "//brave/components/brave_perf_predictor/resources",
+    "//brave/components/resources",
     "//components/page_load_metrics/browser",
     "//components/page_load_metrics/common",
     "//components/prefs",
