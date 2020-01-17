@@ -38,16 +38,16 @@ class P3ABandwidthSavingsPermanentState {
   ~P3ABandwidthSavingsPermanentState();
 
   void AddSavings(uint64_t delta);
-  uint64_t GetTotalSavings() const;
+  uint64_t GetSavingsTotal() const;
 
  private:
   struct DailySaving {
     base::Time day;
     uint64_t saving;
   };
-  void LoadSavings();
-  void SaveSavings();
-  void RecordP3A();
+  void LoadSavingsDaily();
+  void SaveSavingsDaily();
+  void RecordSavingsTotal();
 
   std::list<DailySaving> daily_savings_;
   PrefService* user_prefs_ = nullptr;

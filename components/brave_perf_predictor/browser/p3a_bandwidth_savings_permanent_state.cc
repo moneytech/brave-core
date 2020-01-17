@@ -20,9 +20,8 @@ namespace brave_perf_predictor {
 P3ABandwidthSavingsPermanentState::P3ABandwidthSavingsPermanentState(
     PrefService* user_prefs)
     : user_prefs_(user_prefs) {
-  if (user_prefs) {
-    LoadSavings();
-  }
+  if (user_prefs)
+    LoadSavingsDaily();
 }
 
 P3ABandwidthSavingsPermanentState::~P3ABandwidthSavingsPermanentState() =
@@ -32,25 +31,23 @@ void P3ABandwidthSavingsPermanentState::AddSavings(uint64_t delta) {
   base::Time now_midnight = base::Time::Now().LocalMidnight();
   base::Time last_saved_midnight;
 
-  if (!daily_savings_.empty()) {
+  if (!daily_savings_.empty())
     last_saved_midnight = daily_savings_.front().day;
-  }
 
   if (now_midnight - last_saved_midnight > base::TimeDelta()) {
     // Day changed.
     daily_savings_.push_front({now_midnight, delta});
-    if (daily_savings_.size() > kNumOfSavedDailyUptimes) {
+    if (daily_savings_.size() > kNumOfSavedDailyUptimes)
       daily_savings_.pop_back();
-    }
   } else {
     daily_savings_.front().saving += delta;
   }
 
-  RecordP3A();
-  SaveSavings();
+  RecordSavingsTotal();
+  SaveSavingsDaily();
 }
 
-uint64_t P3ABandwidthSavingsPermanentState::GetTotalSavings() const {
+uint64_t P3ABandwidthSavingsPermanentState::GetSavingsTotal() const {
   // We record only saving for last N days.
   const base::Time n_days_ago =
       base::Time::Now() - base::TimeDelta::FromDays(kNumOfSavedDailyUptimes);
@@ -67,28 +64,26 @@ uint64_t P3ABandwidthSavingsPermanentState::GetTotalSavings() const {
       .saving;
 }
 
-void P3ABandwidthSavingsPermanentState::LoadSavings() {
+void P3ABandwidthSavingsPermanentState::LoadSavingsDaily() {
   DCHECK(daily_savings_.empty());
   const base::ListValue* list =
       user_prefs_->GetList(prefs::kBandwidthSavedDailyBytes);
-  if (!list) {
+  if (!list)
     return;
-  }
+
   for (auto it = list->begin(); it != list->end(); ++it) {
     const base::Value* day = it->FindKey("day");
     const base::Value* saving = it->FindKey("saving");
-    if (!day || !saving || !day->is_double() || !saving->is_double()) {
+    if (!day || !saving || !day->is_double() || !saving->is_double())
       continue;
-    }
-    if (daily_savings_.size() == kNumOfSavedDailyUptimes) {
+    if (daily_savings_.size() == kNumOfSavedDailyUptimes)
       break;
-    }
     daily_savings_.push_back({base::Time::FromDoubleT(day->GetDouble()),
                               (uint64_t)saving->GetDouble()});
   }
 }
 
-void P3ABandwidthSavingsPermanentState::SaveSavings() {
+void P3ABandwidthSavingsPermanentState::SaveSavingsDaily() {
   DCHECK(!daily_savings_.empty());
   DCHECK_LE(daily_savings_.size(), kNumOfSavedDailyUptimes);
 
@@ -103,18 +98,17 @@ void P3ABandwidthSavingsPermanentState::SaveSavings() {
   }
 }
 
-void P3ABandwidthSavingsPermanentState::RecordP3A() {
+void P3ABandwidthSavingsPermanentState::RecordSavingsTotal() {
   int answer = 0;
   if (daily_savings_.size() == kNumOfSavedDailyUptimes) {
     const uint64_t total =
-        static_cast<uint64_t>(GetTotalSavings() / 1024 / 1024);
+        static_cast<uint64_t>(GetSavingsTotal() / 1024 / 1024);
     DCHECK_GE(total, 0ULL);
     int counter = 0;
     for (auto* it = BandwidthSavingsBuckets.begin();
          it != BandwidthSavingsBuckets.end(); ++it, ++counter) {
-      if (total > *it) {
+      if (total > *it)
         answer = counter + 1;
-      }
     }
   }
   UMA_HISTOGRAM_EXACT_LINEAR(kSavingsDailyUMAHistogramName, answer, 6);
