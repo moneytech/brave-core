@@ -5,7 +5,6 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
-#include "brave/components/brave_perf_predictor/browser/third_parties.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "brave/components/brave_perf_predictor/common/pref_names.h"
 #include "components/prefs/pref_service.h"
@@ -17,7 +16,8 @@ namespace brave_perf_predictor {
 
 PerfPredictorTabHelper::PerfPredictorTabHelper(
     content::WebContents* web_contents)
-    : WebContentsObserver(web_contents), bandwidth_predictor_() {
+    : WebContentsObserver(web_contents),
+      bandwidth_predictor_(std::make_unique<BandwidthSavingsPredictor>()) {
   if (web_contents->GetBrowserContext()->IsOffTheRecord())
     return;
 

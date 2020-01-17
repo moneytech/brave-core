@@ -9,12 +9,7 @@
 
 namespace brave_perf_predictor {
 
-class BraveSavingsPredictorTest : public ::testing::Test {
- protected:
-  BraveSavingsPredictorTest() {}
-
-  ~BraveSavingsPredictorTest() {}
-};
+class BraveSavingsPredictorTest : public ::testing::Test {};
 
 TEST_F(BraveSavingsPredictorTest, FeatureArrayGetsPrediction) {
   std::array<double, feature_count> features{};

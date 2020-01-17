@@ -16,7 +16,7 @@ namespace brave_perf_predictor {
 
 class BandwidthSavingsPredictor {
  public:
-  explicit BandwidthSavingsPredictor();
+  BandwidthSavingsPredictor();
   ~BandwidthSavingsPredictor();
 
   void OnPageLoadTimingUpdated(

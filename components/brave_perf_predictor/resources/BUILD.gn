@@ -1,0 +1,15 @@
+import("//tools/grit/grit_rule.gni")
+import("//tools/grit/repack.gni")
+
+grit("resources") {
+  source = "brave_perf_predictor_resources.grd"
+
+  outputs = [
+    "grit/brave_perf_predictor_resources.h",
+    "brave_perf_predictor_resources.pak",
+  ]
+
+  resource_ids = "//brave/browser/resources/resource_ids"
+
+  output_dir = "$root_gen_dir/brave/components/brave_perf_predictor/resources"
+}

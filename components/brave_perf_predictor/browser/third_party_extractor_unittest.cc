@@ -33,27 +33,6 @@ const char test_mapping[] = R"(
 
 class ThirdPartyExtractorTest : public ::testing::Test {
  protected:
-  ThirdPartyExtractorTest() {
-    // You can do set-up work for each test here
-  }
-
-  ~ThirdPartyExtractorTest() override {
-    // You can do clean-up work that doesn't throw exceptions here
-  }
-
-  // If the constructor and destructor are not enough for setting up and
-  // cleaning up each test, you can use the following methods
-
-  void SetUp() override {
-    // Code here will be called immediately after the constructor (right before
-    // each test)
-  }
-
-  void TearDown() override {
-    // Code here will be called immediately after each test (right before the
-    // destructor)
-  }
-
   // Objects declared here can be used by all tests in the test case
   std::string LoadFile() {
     auto path =

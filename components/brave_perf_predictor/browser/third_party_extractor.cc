@@ -8,7 +8,9 @@
 #include "base/json/json_reader.h"
 #include "base/logging.h"
 #include "base/values.h"
+#include "brave/components/brave_perf_predictor/resources/grit/brave_perf_predictor_resources.h"
 #include "third_party/re2/src/re2/re2.h"
+#include "ui/base/resource/resource_bundle.h"
 
 namespace brave_perf_predictor {
 
@@ -36,6 +38,20 @@ std::string get_root_domain(const std::string& domain) {
 }
 
 ThirdPartyExtractor::ThirdPartyExtractor() = default;
+
+bool ThirdPartyExtractor::initialize_from_resource() {
+  const auto resource_id = IDR_THIRD_PARTY_ENTITIES;
+
+  auto& resource_bundle = ui::ResourceBundle::GetSharedInstance();
+  std::string data_resource;
+  if (resource_bundle.IsGzipped(resource_id)) {
+    data_resource = resource_bundle.DecompressDataResource(resource_id);
+  } else {
+    data_resource = resource_bundle.GetRawDataResource(resource_id).as_string();
+  }
+
+  return load_entities(data_resource);
+}
 
 bool ThirdPartyExtractor::load_entities(const std::string& entities) {
   // Reset previous mappings
@@ -97,15 +113,15 @@ bool ThirdPartyExtractor::load_entities(const std::string& entities) {
   return true;
 }
 
-ThirdPartyExtractor::ThirdPartyExtractor(const std::string& entities) {
-  load_entities(entities);
-}
-
 ThirdPartyExtractor::~ThirdPartyExtractor() = default;
 
 // static
 ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
-  return base::Singleton<ThirdPartyExtractor>::get();
+  auto* extractor = base::Singleton<ThirdPartyExtractor>::get();
+  // By default initialize from packaged resources
+  if (!extractor->is_initialized())
+    extractor->initialize_from_resource();
+  return extractor;
 }
 
 base::Optional<std::string> ThirdPartyExtractor::get_entity(

@@ -7,7 +7,6 @@
 
 #include "base/logging.h"
 #include "brave/components/brave_perf_predictor/browser/predictor.h"
-#include "brave/components/brave_perf_predictor/browser/third_parties.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "content/public/common/resource_type.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
@@ -52,8 +51,6 @@ void BandwidthSavingsPredictor::OnSubresourceBlocked(
   feature_map_["adblockRequests"] += 1;
 
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  if (!extractor->is_initialized())
-    extractor->load_entities(static_third_party_config);
 
   auto entity_name = extractor->get_entity(resource_url);
   if (entity_name.has_value())
@@ -134,10 +131,10 @@ double BandwidthSavingsPredictor::predict() {
     return 0;
   }
   if (VLOG_IS_ON(3)) {
-    VLOG(2) << "Predicting on feature map:";
+    VLOG(3) << "Predicting on feature map:";
     auto it = feature_map_.begin();
     while (it != feature_map_.end()) {
-      VLOG(2) << it->first << " :: " << it->second;
+      VLOG(3) << it->first << " :: " << it->second;
       it++;
     }
   }
