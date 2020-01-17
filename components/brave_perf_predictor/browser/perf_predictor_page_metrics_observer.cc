@@ -19,7 +19,6 @@ page_load_metrics::PageLoadMetricsObserver::ObservePolicy
 PerfPredictorPageMetricsObserver::OnCommit(
     content::NavigationHandle* navigation_handle,
     ukm::SourceId source_id) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   // Skip if off the record
   if (navigation_handle->GetWebContents()
           ->GetBrowserContext()
@@ -48,7 +47,6 @@ PerfPredictorPageMetricsObserver::ShouldObserveMimeType(
 
 void PerfPredictorPageMetricsObserver::OnFirstContentfulPaintInPage(
     const page_load_metrics::mojom::PageLoadTiming& timing) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
   } else {
@@ -59,7 +57,6 @@ void PerfPredictorPageMetricsObserver::OnFirstContentfulPaintInPage(
 void PerfPredictorPageMetricsObserver::
     OnFirstMeaningfulPaintInMainFrameDocument(
         const page_load_metrics::mojom::PageLoadTiming& timing) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
   } else {
@@ -69,7 +66,6 @@ void PerfPredictorPageMetricsObserver::
 
 void PerfPredictorPageMetricsObserver::OnLoadEventStart(
     const page_load_metrics::mojom::PageLoadTiming& timing) {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
   if (observer_) {
     observer_->OnPageLoadTimingUpdated(timing);
   } else {

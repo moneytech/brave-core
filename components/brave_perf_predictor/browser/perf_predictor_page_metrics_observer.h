@@ -44,7 +44,6 @@ class PerfPredictorPageMetricsObserver
   // The browser context this navigation is operating in.
   PerfPredictorTabHelper* observer_ = nullptr;
 
-  SEQUENCE_CHECKER(sequence_checker_);
   DISALLOW_COPY_AND_ASSIGN(PerfPredictorPageMetricsObserver);
 };
 
