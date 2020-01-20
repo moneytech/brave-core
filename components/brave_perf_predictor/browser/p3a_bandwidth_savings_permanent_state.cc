@@ -17,6 +17,27 @@
 
 namespace brave_perf_predictor {
 
+namespace {
+
+// Note: append-only enumeration! Never remove any existing values, as this enum
+// is used to bucket a UMA histogram, and removing values breaks that.
+constexpr std::array<uint64_t, 7> BandwidthSavingsBuckets{
+    0,    // 0
+    50,   // >0-50mb
+    100,  // 51-100mb
+    200,  // 101-200mb
+    400,  // 201-400mb
+    700,  // 401-700mb
+    1500  // 701-1500mb
+          // >1501 => bucket 7
+};
+
+constexpr size_t kNumOfSavedDailyUptimes = 7;
+constexpr char kSavingsDailyUMAHistogramName[] =
+    "Brave.Savings.BandwidthSavingsMB";
+
+}  // namespace
+
 P3ABandwidthSavingsPermanentState::P3ABandwidthSavingsPermanentState(
     PrefService* user_prefs)
     : user_prefs_(user_prefs) {

@@ -52,7 +52,7 @@ void BandwidthSavingsPredictor::OnSubresourceBlocked(
 
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
 
-  auto entity_name = extractor->get_entity(resource_url);
+  auto entity_name = extractor->GetEntity(resource_url);
   if (entity_name.has_value())
     feature_map_["thirdParties." + entity_name.value() + ".blocked"] = 1;
 }
@@ -114,7 +114,7 @@ void BandwidthSavingsPredictor::OnResourceLoadComplete(
       resource_load_info.raw_body_bytes;
 }
 
-double BandwidthSavingsPredictor::predict() {
+double BandwidthSavingsPredictor::Predict() {
   if (main_frame_url_.is_empty() || !main_frame_url_.has_host() ||
       !main_frame_url_.SchemeIsHTTPOrHTTPS()) {
     Reset();
@@ -138,7 +138,7 @@ double BandwidthSavingsPredictor::predict() {
       it++;
     }
   }
-  double prediction = ::brave_perf_predictor::predict(feature_map_);
+  double prediction = ::brave_perf_predictor::Predict(feature_map_);
   VLOG(2) << main_frame_url_ << " estimated saving " << prediction << " bytes";
   Reset();
   return prediction;

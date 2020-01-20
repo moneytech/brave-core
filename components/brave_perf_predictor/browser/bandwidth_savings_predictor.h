@@ -25,7 +25,7 @@ class BandwidthSavingsPredictor {
   void OnResourceLoadComplete(
       const GURL& main_frame_url,
       const content::mojom::ResourceLoadInfo& resource_load_info);
-  double predict();
+  double Predict();
   void Reset();
 
  private:

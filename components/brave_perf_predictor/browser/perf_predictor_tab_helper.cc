@@ -45,6 +45,8 @@ void PerfPredictorTabHelper::ReadyToCommitNavigation(
   // Reset predictor state when we're committed to this navigation
   if (bandwidth_predictor_)
     bandwidth_predictor_->Reset();
+  // Record current nevigation ID to know if we're in the same navigation later
+  navigation_id_ = handle->GetNavigationId();
 }
 
 void PerfPredictorTabHelper::DidFinishNavigation(
@@ -58,7 +60,7 @@ void PerfPredictorTabHelper::DidFinishNavigation(
 
 void PerfPredictorTabHelper::RecordSavings() {
   if (bandwidth_predictor_ && web_contents()) {
-    uint64_t savings = (uint64_t)bandwidth_predictor_->predict();
+    uint64_t savings = (uint64_t)bandwidth_predictor_->Predict();
     VLOG(3) << "Saving computed bw saving = " << savings;
     if (savings > 0) {
       // BrowserContenxt can be null in tests

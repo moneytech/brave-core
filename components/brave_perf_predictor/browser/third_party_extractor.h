@@ -18,15 +18,15 @@ class ThirdPartyExtractor {
  public:
   static ThirdPartyExtractor* GetInstance();
 
-  bool load_entities(const std::string& entities);
-  base::Optional<std::string> get_entity(const std::string& domain);
+  bool LoadEntities(const std::string& entities);
+  base::Optional<std::string> GetEntity(const std::string& domain);
 
  private:
   ThirdPartyExtractor();
   ~ThirdPartyExtractor();
 
-  bool is_initialized() { return initialized_; }
-  bool initialize_from_resource();
+  bool IsInitialized() { return initialized_; }
+  bool InitializeFromResource();
 
   friend struct base::DefaultSingletonTraits<ThirdPartyExtractor>;
   bool initialized_ = false;

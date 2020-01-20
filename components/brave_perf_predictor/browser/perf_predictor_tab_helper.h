@@ -39,7 +39,7 @@ class PerfPredictorTabHelper
       const page_load_metrics::mojom::PageLoadTiming& timing);
   static void RegisterProfilePrefs(PrefRegistrySimple* registry);
 
- protected:
+ private:
   void RecordSavings();
 
   // content::WebContentsObserver overrides.
@@ -56,7 +56,6 @@ class PerfPredictorTabHelper
   void DidAttachInterstitialPage() override;
   void WebContentsDestroyed() override;
 
- private:
   friend class content::WebContentsUserData<PerfPredictorTabHelper>;
   int64_t navigation_id_;
   GURL main_frame_url_;
