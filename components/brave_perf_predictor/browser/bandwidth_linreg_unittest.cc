@@ -3,8 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_perf_predictor/browser/predictor.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_linreg.h"
 
+#include "base/containers/flat_map.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
 namespace brave_perf_predictor {
@@ -13,7 +14,7 @@ class BraveSavingsPredictorTest : public ::testing::Test {};
 
 TEST_F(BraveSavingsPredictorTest, FeatureArrayGetsPrediction) {
   std::array<double, feature_count> features{};
-  double result = predict(features);
+  double result = Predict(features);
   EXPECT_NE(result, 0);
 }
 
@@ -39,32 +40,32 @@ TEST_F(BraveSavingsPredictorTest, HandlesSpecificVectorExample) {
       0,  0,   0,   0,   0,   0,      0, 0,     0,  0,       0,  0,
       0,  0,   0,   0,   0,   0,      0, 0,     0,  0};
 
-  double result = brave_perf_predictor::predict(sample);
+  double result = Predict(sample);
   EXPECT_EQ((int)result / 1000, 794);  // Equal on the order of thousands
 }
 
 TEST_F(BraveSavingsPredictorTest, HandlesEmptyFeatureset) {
-  std::unordered_map<std::string, double> features{};
-  double result = predict(features);
+  base::flat_map<std::string, double> features{};
+  double result = Predict(features);
   std::array<double, feature_count> features_array{};
-  double array_result = predict(features_array);
+  double array_result = Predict(features_array);
   EXPECT_EQ(result, array_result);
 }
 
 TEST_F(BraveSavingsPredictorTest, HandlesCompleteFeatureset) {
-  std::unordered_map<std::string, double> features;
+  base::flat_map<std::string, double> features;
   for (unsigned int i = 0; i < feature_count; i++) {
     features[feature_sequence[i]] = 0;
   }
-  double result = predict(features);
+  double result = Predict(features);
   std::array<double, feature_count> array_features{};
-  double array_result = predict(array_features);
+  double array_result = Predict(array_features);
   EXPECT_EQ(result, array_result);
 }
 
 TEST_F(BraveSavingsPredictorTest, HandesSpecificFeaturemapExample) {
   // This test needs to be updated for any change in the model
-  std::unordered_map<std::string, double> featuremap = {
+  base::flat_map<std::string, double> featuremap = {
       {"thirdParties.Google Analytics.blocked", 0},
       {"thirdParties.Facebook.blocked", 1},
       {"thirdParties.Google CDN.blocked", 0},
@@ -280,7 +281,7 @@ TEST_F(BraveSavingsPredictorTest, HandesSpecificFeaturemapExample) {
       {"resources.total.requestCount", 59},
       {"resources.total.size", 238413},
   };
-  double result = predict(featuremap);
+  double result = Predict(featuremap);
   EXPECT_EQ((int)result / 1000, 794);  // Equal on the order of thousands
 }
 

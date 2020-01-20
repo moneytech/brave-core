@@ -7,8 +7,8 @@
 #define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_BANDWIDTH_SAVINGS_PREDICTOR_H_
 
 #include <string>
-#include <unordered_map>
 
+#include "base/containers/flat_map.h"
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
 #include "content/public/common/resource_load_info.mojom.h"
 
@@ -35,7 +35,7 @@ class BandwidthSavingsPredictor {
 
  private:
   GURL main_frame_url_;
-  std::unordered_map<std::string, double> feature_map_;
+  base::flat_map<std::string, double> feature_map_;
 };
 
 }  // namespace brave_perf_predictor

@@ -7,8 +7,8 @@
 #define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_THIRD_PARTY_EXTRACTOR_H_
 
 #include <string>
-#include <unordered_map>
 
+#include "base/containers/flat_map.h"
 #include "base/memory/singleton.h"
 #include "base/values.h"
 
@@ -33,8 +33,8 @@ class ThirdPartyExtractor {
 
   friend struct base::DefaultSingletonTraits<ThirdPartyExtractor>;
   bool initialized_ = false;
-  std::unordered_map<std::string, std::string> entity_by_domain_;
-  std::unordered_map<std::string, std::string> entity_by_root_domain_;
+  base::flat_map<std::string, std::string> entity_by_domain_;
+  base::flat_map<std::string, std::string> entity_by_root_domain_;
 };
 
 }  // namespace brave_perf_predictor

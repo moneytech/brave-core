@@ -65,7 +65,7 @@ double Predict(const std::array<double, feature_count>& features) {
   return std::pow(10, log_prediction);
 }
 
-double Predict(const std::unordered_map<std::string, double>& features) {
+double Predict(const base::flat_map<std::string, double>& features) {
   std::array<double, feature_count> feature_vector{};
   for (unsigned int i = 0; i < feature_count; i++) {
     auto it = features.find(feature_sequence[i]);

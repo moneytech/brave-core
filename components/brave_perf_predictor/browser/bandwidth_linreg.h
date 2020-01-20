@@ -8,9 +8,9 @@
 
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
+#include "base/containers/flat_map.h"
 #include "brave/components/brave_perf_predictor/browser/bandwidth_linreg_parameters.h"
 
 namespace brave_perf_predictor {
@@ -26,7 +26,7 @@ double Predict(const std::array<double, feature_count>& features);
 // features are present and only the necessary features are provided.
 // The function uses 0 for any features not provided and ignores
 // any extra features.
-double Predict(const std::unordered_map<std::string, double>& features);
+double Predict(const base::flat_map<std::string, double>& features);
 
 }  // namespace brave_perf_predictor
 
