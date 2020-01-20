@@ -19,6 +19,11 @@ class BandwidthSavingsPredictor {
   BandwidthSavingsPredictor();
   ~BandwidthSavingsPredictor();
 
+  // disallow copying
+  BandwidthSavingsPredictor(const BandwidthSavingsPredictor&) = delete;
+  BandwidthSavingsPredictor& operator=(const BandwidthSavingsPredictor&) =
+      delete;
+
   void OnPageLoadTimingUpdated(
       const page_load_metrics::mojom::PageLoadTiming& timing);
   void OnSubresourceBlocked(const std::string& resource_url);

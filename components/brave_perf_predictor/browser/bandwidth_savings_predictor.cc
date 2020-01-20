@@ -6,7 +6,7 @@
 #include "brave/components/brave_perf_predictor/browser/bandwidth_savings_predictor.h"
 
 #include "base/logging.h"
-#include "brave/components/brave_perf_predictor/browser/predictor.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_linreg.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "content/public/common/resource_type.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"

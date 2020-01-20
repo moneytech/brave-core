@@ -34,6 +34,10 @@ class PerfPredictorTabHelper
  public:
   explicit PerfPredictorTabHelper(content::WebContents*);
   ~PerfPredictorTabHelper() override;
+  // disallow copying
+  PerfPredictorTabHelper(const PerfPredictorTabHelper&) = delete;
+  PerfPredictorTabHelper& operator=(const PerfPredictorTabHelper&) = delete;
+
   void OnBlockedSubresource(const std::string& subresource);
   void OnPageLoadTimingUpdated(
       const page_load_metrics::mojom::PageLoadTiming& timing);
@@ -65,7 +69,6 @@ class PerfPredictorTabHelper
 #endif
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();
-  DISALLOW_COPY_AND_ASSIGN(PerfPredictorTabHelper);
 };
 
 }  // namespace brave_perf_predictor

@@ -9,8 +9,6 @@
 #include <cstdint>
 #include <string>
 
-#include "base/macros.h"
-#include "base/sequence_checker.h"
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 #include "components/page_load_metrics/browser/page_load_metrics_observer.h"
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
@@ -24,6 +22,12 @@ class PerfPredictorPageMetricsObserver
  public:
   PerfPredictorPageMetricsObserver();
   ~PerfPredictorPageMetricsObserver() override;
+
+  // disallow copying
+  PerfPredictorPageMetricsObserver(const PerfPredictorPageMetricsObserver&) =
+      delete;
+  PerfPredictorPageMetricsObserver& operator=(
+      const PerfPredictorPageMetricsObserver&) = delete;
 
   void OnFirstContentfulPaintInPage(
       const page_load_metrics::mojom::PageLoadTiming& timing) override;
@@ -43,8 +47,6 @@ class PerfPredictorPageMetricsObserver
 
   // The browser context this navigation is operating in.
   PerfPredictorTabHelper* observer_ = nullptr;
-
-  DISALLOW_COPY_AND_ASSIGN(PerfPredictorPageMetricsObserver);
 };
 
 }  // namespace brave_perf_predictor

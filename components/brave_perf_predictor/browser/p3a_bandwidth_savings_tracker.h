@@ -9,7 +9,6 @@
 #include <array>
 #include <list>
 
-#include "base/macros.h"
 #include "base/timer/timer.h"
 
 class PrefRegistrySimple;
@@ -21,13 +20,17 @@ class P3ABandwidthSavingsTracker {
  public:
   explicit P3ABandwidthSavingsTracker(PrefService* user_prefs);
   ~P3ABandwidthSavingsTracker();
+
+  // disallow copying
+  P3ABandwidthSavingsTracker(const P3ABandwidthSavingsTracker&) = delete;
+  P3ABandwidthSavingsTracker& operator=(const P3ABandwidthSavingsTracker&) =
+      delete;
+
   static void RegisterPrefs(PrefRegistrySimple* registry);
   void RecordSavings(uint64_t savings);
 
  private:
   PrefService* user_prefs_;
-
-  DISALLOW_COPY_AND_ASSIGN(P3ABandwidthSavingsTracker);
 };
 
 }  // namespace brave_perf_predictor

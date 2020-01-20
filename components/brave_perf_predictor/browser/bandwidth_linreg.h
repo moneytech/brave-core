@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "brave/components/brave_perf_predictor/browser/predictor_parameters.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_linreg_parameters.h"
 
 namespace brave_perf_predictor {
 

@@ -12,7 +12,6 @@
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_page_metrics_observer.h"
-using brave_perf_predictor::PerfPredictorPageMetricsObserver;
 #endif
 
 namespace chrome {
@@ -44,7 +43,9 @@ void BravePageLoadMetricsEmbedder::RegisterEmbedderObservers(
   PageLoadMetricsEmbedder::RegisterEmbedderObservers(tracker);
 
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
-  tracker->AddObserver(std::make_unique<PerfPredictorPageMetricsObserver>());
+  tracker->AddObserver(
+      std::make_unique<
+          brave_perf_predictor::PerfPredictorPageMetricsObserver>());
 #endif
 }
 

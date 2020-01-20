@@ -8,7 +8,6 @@
 
 #include <list>
 
-#include "base/macros.h"
 #include "base/timer/timer.h"
 
 class PrefService;
@@ -19,6 +18,12 @@ class P3ABandwidthSavingsPermanentState {
  public:
   explicit P3ABandwidthSavingsPermanentState(PrefService* user_prefs);
   ~P3ABandwidthSavingsPermanentState();
+
+  // disallow copying
+  P3ABandwidthSavingsPermanentState(const P3ABandwidthSavingsPermanentState&) =
+      delete;
+  P3ABandwidthSavingsPermanentState& operator=(
+      const P3ABandwidthSavingsPermanentState&) = delete;
 
   void AddSavings(uint64_t delta);
 
@@ -34,8 +39,6 @@ class P3ABandwidthSavingsPermanentState {
 
   std::list<DailySaving> daily_savings_;
   PrefService* user_prefs_ = nullptr;
-
-  DISALLOW_COPY_AND_ASSIGN(P3ABandwidthSavingsPermanentState);
 };
 
 }  // namespace brave_perf_predictor

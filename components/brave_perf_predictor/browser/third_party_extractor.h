@@ -24,6 +24,9 @@ class ThirdPartyExtractor {
  private:
   ThirdPartyExtractor();
   ~ThirdPartyExtractor();
+  // disallow copying
+  ThirdPartyExtractor(const ThirdPartyExtractor&) = delete;
+  ThirdPartyExtractor& operator=(const ThirdPartyExtractor&) = delete;
 
   bool IsInitialized() { return initialized_; }
   bool InitializeFromResource();
@@ -32,8 +35,6 @@ class ThirdPartyExtractor {
   bool initialized_ = false;
   std::unordered_map<std::string, std::string> entity_by_domain_;
   std::unordered_map<std::string, std::string> entity_by_root_domain_;
-
-  DISALLOW_COPY_AND_ASSIGN(ThirdPartyExtractor);
 };
 
 }  // namespace brave_perf_predictor

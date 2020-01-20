@@ -13,9 +13,9 @@ source_set("browser") {
     "perf_predictor_page_metrics_observer.h",
     "perf_predictor_tab_helper.cc",
     "perf_predictor_tab_helper.h",
-    "predictor.cc",
-    "predictor.h",
-    "predictor_parameters.h",
+    "bandwidth_linreg.cc",
+    "bandwidth_linreg.h",
+    "bandwidth_linreg_parameters.h",
     "third_party_extractor.cc",
     "third_party_extractor.h",
   ]
