@@ -19,19 +19,19 @@ class ThirdPartyExtractor {
   static ThirdPartyExtractor* GetInstance();
 
   bool LoadEntities(const std::string& entities);
-  base::Optional<std::string> GetEntity(const std::string& domain);
+  base::Optional<std::string> GetEntity(const std::string& domain) const;
 
  private:
+  friend struct base::DefaultSingletonTraits<ThirdPartyExtractor>;
+
   ThirdPartyExtractor();
   ~ThirdPartyExtractor();
-  // disallow copying
   ThirdPartyExtractor(const ThirdPartyExtractor&) = delete;
   ThirdPartyExtractor& operator=(const ThirdPartyExtractor&) = delete;
 
-  bool IsInitialized() { return initialized_; }
+  bool IsInitialized() const { return initialized_; }
   bool InitializeFromResource();
 
-  friend struct base::DefaultSingletonTraits<ThirdPartyExtractor>;
   bool initialized_ = false;
   base::flat_map<std::string, std::string> entity_by_domain_;
   base::flat_map<std::string, std::string> entity_by_root_domain_;

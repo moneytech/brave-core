@@ -129,7 +129,7 @@ ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
 }
 
 base::Optional<std::string> ThirdPartyExtractor::GetEntity(
-    const std::string& origin_or_url) {
+    const std::string& origin_or_url) const {
   base::Optional<std::string> domain = GetDomainFromOriginOrUrl(origin_or_url);
   if (domain.has_value()) {
     auto domain_entry = entity_by_domain_.find(domain.value());

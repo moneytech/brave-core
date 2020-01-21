@@ -21,7 +21,7 @@ namespace {
 
 // Note: append-only enumeration! Never remove any existing values, as this enum
 // is used to bucket a UMA histogram, and removing values breaks that.
-constexpr std::array<uint64_t, 7> BandwidthSavingsBuckets{
+constexpr std::array<uint64_t, 7> kBandwidthSavingsBuckets{
     0,    // 0
     50,   // >0-50mb
     100,  // 51-100mb
@@ -124,15 +124,14 @@ void P3ABandwidthSavingsPermanentState::RecordSavingsTotal() {
   if (daily_savings_.size() == kNumOfSavedDailyUptimes) {
     const uint64_t total =
         static_cast<uint64_t>(GetSavingsTotal() / 1024 / 1024);
-    DCHECK_GE(total, 0ULL);
     int counter = 0;
-    for (auto* it = BandwidthSavingsBuckets.begin();
-         it != BandwidthSavingsBuckets.end(); ++it, ++counter) {
+    for (auto* it = kBandwidthSavingsBuckets.begin();
+         it != kBandwidthSavingsBuckets.end(); ++it, ++counter) {
       if (total > *it)
         answer = counter + 1;
     }
   }
-  UMA_HISTOGRAM_EXACT_LINEAR(kSavingsDailyUMAHistogramName, answer, 6);
+  UMA_HISTOGRAM_EXACT_LINEAR(kSavingsDailyUMAHistogramName, answer, 7);
 }
 
 }  // namespace brave_perf_predictor

@@ -9,8 +9,6 @@
 #include <numeric>
 #include <utility>
 
-#include "base/logging.h"
-#include "base/metrics/histogram_macros.h"
 #include "brave/components/brave_perf_predictor/browser/p3a_bandwidth_savings_permanent_state.h"
 #include "brave/components/brave_perf_predictor/common/pref_names.h"
 #include "components/prefs/pref_registry_simple.h"
@@ -26,7 +24,7 @@ void P3ABandwidthSavingsTracker::RecordSavings(uint64_t savings) {
   if (savings > 0) {
     // TODO(AndriusA): optimise if needed, loading permanent state on every
     // record could be costly
-    std::unique_ptr<P3ABandwidthSavingsPermanentState> permanent_state =
+    auto permanent_state =
         std::make_unique<P3ABandwidthSavingsPermanentState>(user_prefs_);
     permanent_state->AddSavings(savings);
   }

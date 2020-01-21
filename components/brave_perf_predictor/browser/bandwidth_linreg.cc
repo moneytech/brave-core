@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "base/logging.h"
+#include "brave/components/brave_perf_predictor/browser/bandwidth_linreg_parameters.h"
 
 namespace brave_perf_predictor {
 
@@ -37,7 +38,7 @@ bool StandardiseFeatsNoOutliers(
 
 }  // namespace
 
-double Predict(const std::array<double, feature_count>& features) {
+double LinregPredictVector(const std::array<double, feature_count>& features) {
   // Standardise numeric features
   std::array<double, standardise_feat_count> numeric_features;
   std::copy(features.begin(), features.begin() + standardise_feat_count,
@@ -65,14 +66,14 @@ double Predict(const std::array<double, feature_count>& features) {
   return std::pow(10, log_prediction);
 }
 
-double Predict(const base::flat_map<std::string, double>& features) {
+double LinregPredictNamed(const base::flat_map<std::string, double>& features) {
   std::array<double, feature_count> feature_vector{};
   for (unsigned int i = 0; i < feature_count; i++) {
     auto it = features.find(feature_sequence[i]);
     if (it != features.end())
       feature_vector[i] = it->second;
   }
-  return Predict(feature_vector);
+  return LinregPredictVector(feature_vector);
 }
 
 }  // namespace brave_perf_predictor

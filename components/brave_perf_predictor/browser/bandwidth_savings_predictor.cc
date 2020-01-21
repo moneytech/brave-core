@@ -50,11 +50,12 @@ void BandwidthSavingsPredictor::OnSubresourceBlocked(
     const std::string& resource_url) {
   feature_map_["adblockRequests"] += 1;
 
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-
-  auto entity_name = extractor->GetEntity(resource_url);
-  if (entity_name.has_value())
-    feature_map_["thirdParties." + entity_name.value() + ".blocked"] = 1;
+  const ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+  if (extractor) {
+    const auto entity_name = extractor->GetEntity(resource_url);
+    if (entity_name.has_value())
+      feature_map_["thirdParties." + entity_name.value() + ".blocked"] = 1;
+  }
 }
 
 void BandwidthSavingsPredictor::OnResourceLoadComplete(
@@ -68,9 +69,10 @@ void BandwidthSavingsPredictor::OnResourceLoadComplete(
   }
   main_frame_url_ = main_frame_url;
 
-  bool is_third_party = !net::registry_controlled_domains::SameDomainOrHost(
-      main_frame_url, resource_load_info.url,
-      net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+  const bool is_third_party =
+      !net::registry_controlled_domains::SameDomainOrHost(
+          main_frame_url, resource_load_info.url,
+          net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
 
   if (is_third_party) {
     feature_map_["resources.third-party.requestCount"] += 1;
@@ -132,13 +134,11 @@ double BandwidthSavingsPredictor::Predict() {
   }
   if (VLOG_IS_ON(3)) {
     VLOG(3) << "Predicting on feature map:";
-    auto it = feature_map_.begin();
-    while (it != feature_map_.end()) {
-      VLOG(3) << it->first << " :: " << it->second;
-      it++;
+    for (const auto& feature : feature_map_) {
+      VLOG(3) << feature.first << " :: " << feature.second;
     }
   }
-  double prediction = ::brave_perf_predictor::Predict(feature_map_);
+  double prediction = ::brave_perf_predictor::LinregPredictNamed(feature_map_);
   VLOG(2) << main_frame_url_ << " estimated saving " << prediction << " bytes";
   Reset();
   return prediction;

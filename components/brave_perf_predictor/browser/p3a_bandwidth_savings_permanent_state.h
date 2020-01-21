@@ -8,7 +8,7 @@
 
 #include <list>
 
-#include "base/timer/timer.h"
+#include "base/time/time.h"
 
 class PrefService;
 
@@ -18,8 +18,6 @@ class P3ABandwidthSavingsPermanentState {
  public:
   explicit P3ABandwidthSavingsPermanentState(PrefService* user_prefs);
   ~P3ABandwidthSavingsPermanentState();
-
-  // disallow copying
   P3ABandwidthSavingsPermanentState(const P3ABandwidthSavingsPermanentState&) =
       delete;
   P3ABandwidthSavingsPermanentState& operator=(

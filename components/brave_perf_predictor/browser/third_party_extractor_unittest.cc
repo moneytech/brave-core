@@ -21,13 +21,20 @@ const char test_mapping[] = R"(
     "company":"Google",
     "homepage":"https://www.google.com/analytics/analytics/",
     "categories":["analytics"],
-    "domains":["www.google-analytics.com","ssl.google-analytics.com","google-analytics.com","urchin.com"]
+    "domains":["www.google-analytics.com","ssl.google-analytics.com",
+      "google-analytics.com","urchin.com"]
 },
 {
     "name":"Facebook",
     "homepage":"https://www.facebook.com",
     "categories":["social"],
-    "domains":["www.facebook.com","connect.facebook.net","staticxx.facebook.com","static.xx.fbcdn.net","m.facebook.com","atlassbx.com","fbcdn-photos-e-a.akamaihd.net","23.62.3.183","akamai.net","akamaiedge.net","akamaitechnologies.com","akamaitechnologies.fr","akamaized.net","edgefcs.net","edgekey.net","edgesuite.net","srip.net","cquotient.com","demandware.net","platform-lookaside.fbsbx.com"]
+    "domains":["www.facebook.com","connect.facebook.net",
+      "staticxx.facebook.com","static.xx.fbcdn.net","m.facebook.com",
+      "atlassbx.com","fbcdn-photos-e-a.akamaihd.net","23.62.3.183",
+      "akamai.net","akamaiedge.net","akamaitechnologies.com",
+      "akamaitechnologies.fr","akamaized.net","edgefcs.net",
+      "edgekey.net","edgesuite.net","srip.net","cquotient.com",
+      "demandware.net","platform-lookaside.fbsbx.com"]
 }
 ])";
 

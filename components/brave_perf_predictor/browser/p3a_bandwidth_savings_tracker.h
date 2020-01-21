@@ -6,10 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_P3A_BANDWIDTH_SAVINGS_TRACKER_H_
 #define BRAVE_COMPONENTS_BRAVE_PERF_PREDICTOR_BROWSER_P3A_BANDWIDTH_SAVINGS_TRACKER_H_
 
-#include <array>
-#include <list>
-
-#include "base/timer/timer.h"
+#include <cstdint>
 
 class PrefRegistrySimple;
 class PrefService;
