@@ -9,17 +9,38 @@
 #include <string>
 
 #include "base/containers/flat_map.h"
-#include "components/page_load_metrics/common/page_load_metrics.mojom.h"
-#include "content/public/common/resource_load_info.mojom.h"
+#include "url/gurl.h"
+
+namespace page_load_metrics {
+namespace mojom {
+
+class PageLoadTiming;
+
+}  // namespace mojom
+}  // namespace page_load_metrics
+
+namespace content {
+namespace mojom {
+
+class ResourceLoadInfo;
+
+}  // namespace mojom
+}  // namespace content
 
 namespace brave_perf_predictor {
 
+// Accumulates statistics for a page being loaded and produces estimated
+// bandwidth savings when queried. If reused, caller is responsible for
+// resetting the predictor's state by calling |Reset|.
+//
+// The predictor expects to receive a series of |PageLoadTiming| inputs to
+// extract relevant standard performance metrics from, as well as notifications
+// of any resources fully loaded or blocked.
 class BandwidthSavingsPredictor {
  public:
   BandwidthSavingsPredictor();
   ~BandwidthSavingsPredictor();
 
-  // disallow copying
   BandwidthSavingsPredictor(const BandwidthSavingsPredictor&) = delete;
   BandwidthSavingsPredictor& operator=(const BandwidthSavingsPredictor&) =
       delete;
@@ -30,7 +51,7 @@ class BandwidthSavingsPredictor {
   void OnResourceLoadComplete(
       const GURL& main_frame_url,
       const content::mojom::ResourceLoadInfo& resource_load_info);
-  double Predict();
+  double PredictSavingsBytes() const;
   void Reset();
 
  private:

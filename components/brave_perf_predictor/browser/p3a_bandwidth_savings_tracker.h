@@ -17,8 +17,6 @@ class P3ABandwidthSavingsTracker {
  public:
   explicit P3ABandwidthSavingsTracker(PrefService* user_prefs);
   ~P3ABandwidthSavingsTracker();
-
-  // disallow copying
   P3ABandwidthSavingsTracker(const P3ABandwidthSavingsTracker&) = delete;
   P3ABandwidthSavingsTracker& operator=(const P3ABandwidthSavingsTracker&) =
       delete;
@@ -28,6 +26,7 @@ class P3ABandwidthSavingsTracker {
 
  private:
   PrefService* user_prefs_;
+  void StoreSavingsHistogram(uint64_t savings_bytes);
 };
 
 }  // namespace brave_perf_predictor

@@ -38,53 +38,53 @@ const char test_mapping[] = R"(
 }
 ])";
 
-class ThirdPartyExtractorTest : public ::testing::Test {
- protected:
-  // Objects declared here can be used by all tests in the test case
-  std::string LoadFile() {
-    auto path =
-        base::FilePath(FILE_PATH_LITERAL("brave"))
-            .Append(FILE_PATH_LITERAL("components"))
-            .Append(FILE_PATH_LITERAL("brave_perf_predictor"))
-            .Append(FILE_PATH_LITERAL("resources"))
-            .Append(FILE_PATH_LITERAL("entities-httparchive-nostats.json"));
+namespace {
 
-    std::string value;
-    bool read = ReadFileToString(path, &value);
-    if (read) {
-      return value;
-    } else {
-      return "";
-    }
+std::string LoadFile() {
+  auto path =
+      base::FilePath(FILE_PATH_LITERAL("brave"))
+          .Append(FILE_PATH_LITERAL("components"))
+          .Append(FILE_PATH_LITERAL("brave_perf_predictor"))
+          .Append(FILE_PATH_LITERAL("resources"))
+          .Append(FILE_PATH_LITERAL("entities-httparchive-nostats.json"));
+
+  std::string value;
+  bool read = ReadFileToString(path, &value);
+  if (read) {
+    return value;
+  } else {
+    return "";
   }
-};
+}
 
-TEST_F(ThirdPartyExtractorTest, HandlesEmptyJSON) {
+}  // namespace
+
+TEST(ThirdPartyExtractorTest, HandlesEmptyJSON) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   bool parsed = extractor->LoadEntities("");
   EXPECT_TRUE(!parsed);
 }
 
-TEST_F(ThirdPartyExtractorTest, ParsesJSON) {
+TEST(ThirdPartyExtractorTest, ParsesJSON) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   bool parsed = extractor->LoadEntities(test_mapping);
   EXPECT_TRUE(parsed);
 }
 
-TEST_F(ThirdPartyExtractorTest, HandlesInvalidJSON) {
+TEST(ThirdPartyExtractorTest, HandlesInvalidJSON) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   bool parsed = extractor->LoadEntities(R"([{"name":"Google Analytics")");
   EXPECT_TRUE(!parsed);
 }
 
-TEST_F(ThirdPartyExtractorTest, HandlesFullDataset) {
+TEST(ThirdPartyExtractorTest, HandlesFullDataset) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile();
   bool parsed = extractor->LoadEntities(dataset);
   EXPECT_TRUE(parsed);
 }
 
-TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
+TEST(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile();
   extractor->LoadEntities(dataset);
@@ -94,7 +94,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
   EXPECT_EQ(entity.value(), "Google Analytics");
 }
 
-TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
+TEST(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile();
   extractor->LoadEntities(dataset);
@@ -103,7 +103,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
   EXPECT_EQ(entity.value(), "Google Analytics");
 }
 
-TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
+TEST(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile();
   extractor->LoadEntities(dataset);
@@ -112,7 +112,7 @@ TEST_F(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
   EXPECT_EQ(entity.value(), "Facebook");
 }
 
-TEST_F(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
+TEST(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   auto dataset = LoadFile();
   extractor->LoadEntities(dataset);

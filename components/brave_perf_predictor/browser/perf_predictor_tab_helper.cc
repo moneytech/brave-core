@@ -7,9 +7,12 @@
 
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "brave/components/brave_perf_predictor/common/pref_names.h"
+#include "components/prefs/pref_registry_simple.h"
 #include "components/prefs/pref_service.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
+#include "content/public/browser/navigation_handle.h"
+#include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_user_data.h"
 
 namespace brave_perf_predictor {
@@ -60,7 +63,9 @@ void PerfPredictorTabHelper::DidFinishNavigation(
 
 void PerfPredictorTabHelper::RecordSavings() {
   if (bandwidth_predictor_ && web_contents()) {
-    uint64_t savings = (uint64_t)bandwidth_predictor_->Predict();
+    const uint64_t savings =
+        static_cast<uint64_t>(bandwidth_predictor_->PredictSavingsBytes());
+    bandwidth_predictor_->Reset();
     VLOG(3) << "Saving computed bw saving = " << savings;
     if (savings > 0) {
       // BrowserContenxt can be null in tests

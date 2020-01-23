@@ -8,6 +8,8 @@
 #include "base/logging.h"
 #include "brave/components/brave_perf_predictor/browser/bandwidth_linreg.h"
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "components/page_load_metrics/common/page_load_metrics.mojom.h"
+#include "content/public/common/resource_load_info.mojom.h"
 #include "content/public/common/resource_type.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 
@@ -116,20 +118,20 @@ void BandwidthSavingsPredictor::OnResourceLoadComplete(
       resource_load_info.raw_body_bytes;
 }
 
-double BandwidthSavingsPredictor::Predict() {
-  if (main_frame_url_.is_empty() || !main_frame_url_.has_host() ||
+double BandwidthSavingsPredictor::PredictSavingsBytes() const {
+  if (!main_frame_url_.is_valid() || !main_frame_url_.has_host() ||
       !main_frame_url_.SchemeIsHTTPOrHTTPS()) {
-    Reset();
     return 0;
   }
-  if (feature_map_["transfer.total.size"] > 0) {
-    VLOG(2) << main_frame_url_ << " total download size "
-            << feature_map_["transfer.total.size"] << " bytes";
+  const auto total_size = feature_map_.find("transfer.total.size");
+  if (total_size != feature_map_.end() && total_size->second > 0) {
+    VLOG(2) << main_frame_url_ << " total download size " << total_size->second
+            << " bytes";
   }
 
   // Short-circuit if nothing got blocked
-  if (feature_map_["adblockRequests"] < 1) {
-    Reset();
+  const auto adblock_requests = feature_map_.find("transfer.total.size");
+  if (adblock_requests == feature_map_.end() || adblock_requests->second < 1) {
     return 0;
   }
   if (VLOG_IS_ON(3)) {
@@ -140,7 +142,6 @@ double BandwidthSavingsPredictor::Predict() {
   }
   double prediction = ::brave_perf_predictor::LinregPredictNamed(feature_map_);
   VLOG(2) << main_frame_url_ << " estimated saving " << prediction << " bytes";
-  Reset();
   return prediction;
 }
 

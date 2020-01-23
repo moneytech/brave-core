@@ -9,11 +9,19 @@
 #include <list>
 
 #include "base/time/time.h"
+#include "base/values.h"
 
 class PrefService;
 
 namespace brave_perf_predictor {
 
+// This class accumulates savings reported via |AddSavings| over time in
+// |PrefService| User Preferences for persistency and returns those for the last
+// full period available when queried via |GetFullPeriodSavingsBytes|.
+//
+// Time interval to accumulate data for is defined internally and
+// |GetFullPeriodSavingsBytes| returns 0 if there aren't enough readings to
+// cover a full period.
 class P3ABandwidthSavingsPermanentState {
  public:
   explicit P3ABandwidthSavingsPermanentState(PrefService* user_prefs);
@@ -24,11 +32,13 @@ class P3ABandwidthSavingsPermanentState {
       const P3ABandwidthSavingsPermanentState&) = delete;
 
   void AddSavings(uint64_t delta);
+  base::Optional<uint64_t> GetFullPeriodSavingsBytes();
 
  private:
   struct DailySaving {
     base::Time day;
     uint64_t saving;
+    // DailySaving(base::Time day, uint64_t saving): day(day), saving(saving) {}
   };
   void LoadSavingsDaily();
   void SaveSavingsDaily();
