@@ -18,8 +18,9 @@ class ThirdPartyExtractor {
  public:
   static ThirdPartyExtractor* GetInstance();
 
-  bool LoadEntities(const std::string& entities);
-  base::Optional<std::string> GetEntity(const std::string& domain) const;
+  bool LoadEntities(const base::StringPiece entities);
+  base::Optional<std::string> GetEntity(
+      const base::StringPiece domain) const;
 
  private:
   friend struct base::DefaultSingletonTraits<ThirdPartyExtractor>;
@@ -30,6 +31,7 @@ class ThirdPartyExtractor {
   ThirdPartyExtractor& operator=(const ThirdPartyExtractor&) = delete;
 
   bool IsInitialized() const { return initialized_; }
+  void MarkInitialized(bool initialized) { initialized_ = initialized; }
   bool InitializeFromResource();
 
   bool initialized_ = false;

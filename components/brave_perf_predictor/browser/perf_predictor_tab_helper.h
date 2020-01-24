@@ -55,6 +55,7 @@ class PerfPredictorTabHelper
   static void RegisterProfilePrefs(PrefRegistrySimple* registry);
 
  private:
+  friend class content::WebContentsUserData<PerfPredictorTabHelper>;
   void RecordSavings();
 
   // content::WebContentsObserver overrides.
@@ -71,7 +72,6 @@ class PerfPredictorTabHelper
   void DidAttachInterstitialPage() override;
   void WebContentsDestroyed() override;
 
-  friend class content::WebContentsUserData<PerfPredictorTabHelper>;
   int64_t navigation_id_;
   GURL main_frame_url_;
   std::unique_ptr<BandwidthSavingsPredictor> bandwidth_predictor_;

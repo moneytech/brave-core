@@ -62,7 +62,7 @@ std::string LoadFile() {
 TEST(ThirdPartyExtractorTest, HandlesEmptyJSON) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   bool parsed = extractor->LoadEntities("");
-  EXPECT_TRUE(!parsed);
+  EXPECT_FALSE(parsed);
 }
 
 TEST(ThirdPartyExtractorTest, ParsesJSON) {
@@ -74,7 +74,7 @@ TEST(ThirdPartyExtractorTest, ParsesJSON) {
 TEST(ThirdPartyExtractorTest, HandlesInvalidJSON) {
   ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
   bool parsed = extractor->LoadEntities(R"([{"name":"Google Analytics")");
-  EXPECT_TRUE(!parsed);
+  EXPECT_FALSE(parsed);
 }
 
 TEST(ThirdPartyExtractorTest, HandlesFullDataset) {
@@ -117,7 +117,7 @@ TEST(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
   auto dataset = LoadFile();
   extractor->LoadEntities(dataset);
   auto entity = extractor->GetEntity("example.com");
-  EXPECT_TRUE(!entity.has_value());
+  EXPECT_FALSE(entity.has_value());
 }
 
 }  // namespace brave_perf_predictor
