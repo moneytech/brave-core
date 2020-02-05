@@ -1,5 +1,5 @@
 diff --git a/components/sync/driver/glue/sync_engine_backend.cc b/components/sync/driver/glue/sync_engine_backend.cc
-index 70ac16afe981302316e7382ea1ff48a7bc8c7d9c..4c5728015594ab8a8e48c790fc3205da7fbdec88 100644
+index 4e6971a03405300f3167e849baa07c877021f6ac..ac318cb42d06dab9ddd336c254e6fcc0f247ffe6 100644
 --- a/components/sync/driver/glue/sync_engine_backend.cc
 +++ b/components/sync/driver/glue/sync_engine_backend.cc
 @@ -376,6 +376,7 @@ void SyncEngineBackend::DoInitialize(SyncEngine::InitParams params) {

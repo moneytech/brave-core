@@ -1,5 +1,5 @@
 diff --git a/chrome/installer/linux/common/installer.include b/chrome/installer/linux/common/installer.include
-index 21ae32901cc38c032e9a40b4949a879e87a4b7fb..e654c2a45121241bd95c68cf3447e8bb75c29c27 100644
+index 48913a4f6a2ee3c4b7f1e499b93dc9e2fc0b2018..e654c2a45121241bd95c68cf3447e8bb75c29c27 100644
 --- a/chrome/installer/linux/common/installer.include
 +++ b/chrome/installer/linux/common/installer.include
 @@ -75,6 +75,7 @@ process_template() (
@@ -36,15 +36,6 @@ index 21ae32901cc38c032e9a40b4949a879e87a4b7fb..e654c2a45121241bd95c68cf3447e8bb
    # ICU data file; Necessary when the GN icu_use_data_file flag is true.
    install -m 644 "${BUILDDIR}/icudtl.dat" "${STAGEDIR}/${INSTALLDIR}/"
  
-@@ -184,7 +204,7 @@ stage_install_common() {
-   strippedfile="${buildfile}.stripped"
-   debugfile="${buildfile}.debug"
-   "${BUILDDIR}/installer/common/eu-strip" -o "${strippedfile}" -f "${debugfile}" "${buildfile}"
--  install -m 4755 "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${PROGNAME}-sandbox"
-+  install -m 4755 "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/chrome-sandbox"
- 
-   # l10n paks
-   install -m 755 -d "${STAGEDIR}/${INSTALLDIR}/locales/"
 @@ -285,11 +305,13 @@ stage_install_common() {
  
    # app icons

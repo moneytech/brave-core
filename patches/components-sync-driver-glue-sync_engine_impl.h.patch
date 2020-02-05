@@ -1,5 +1,5 @@
 diff --git a/components/sync/driver/glue/sync_engine_impl.h b/components/sync/driver/glue/sync_engine_impl.h
-index 760be2dc0fdcaa28c5ee654528c6955106c62407..df0b25f011d7010df55fa4138190f89fba1056d5 100644
+index 098bc6807a9d0f731486f787f8d33485ecb9d11b..7f8fa86eb7ee753a5ac9da0af313f8be8381fc24 100644
 --- a/components/sync/driver/glue/sync_engine_impl.h
 +++ b/components/sync/driver/glue/sync_engine_impl.h
 @@ -221,6 +221,7 @@ class SyncEngineImpl : public SyncEngine, public InvalidationHandler {

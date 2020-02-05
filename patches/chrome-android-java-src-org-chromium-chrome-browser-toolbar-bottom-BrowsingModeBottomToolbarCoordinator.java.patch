@@ -1,5 +1,5 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/bottom/BrowsingModeBottomToolbarCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/toolbar/bottom/BrowsingModeBottomToolbarCoordinator.java
-index af1900e473a261b701943b8e9c49bfab26737118..b333179917757bb10acbaa5935e4db20fc8a4cce 100644
+index c77028899c81c75ee209688ce1e3e48b9543c27a..84e9c035c82cfaac4569e5dd158241e444939d7a 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/bottom/BrowsingModeBottomToolbarCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/toolbar/bottom/BrowsingModeBottomToolbarCoordinator.java
 @@ -42,7 +42,7 @@ public class BrowsingModeBottomToolbarCoordinator {
