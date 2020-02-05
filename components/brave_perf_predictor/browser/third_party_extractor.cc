@@ -45,20 +45,19 @@ std::string GetRootDomain(const std::string domain) {
 
 }  // namespace
 
-ThirdPartyExtractor::ThirdPartyExtractor() = default;
-
-bool ThirdPartyExtractor::InitializeFromResource() {
-  const auto resource_id = IDR_THIRD_PARTY_ENTITIES;
-
-  auto& resource_bundle = ui::ResourceBundle::GetSharedInstance();
-  std::string data_resource;
-  if (resource_bundle.IsGzipped(resource_id)) {
-    data_resource = resource_bundle.DecompressDataResource(resource_id);
-  } else {
-    data_resource = resource_bundle.GetRawDataResource(resource_id).as_string();
+// static
+ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
+  auto* extractor = base::Singleton<ThirdPartyExtractor>::get();
+  // By default initialize from packaged resources
+  if (!extractor->IsInitialized()) {
+    bool initialized = extractor->InitializeFromResource();
+    if (!initialized) {
+      VLOG(2) << "Initialization from resource failed, marking as initialized "
+              << "will not retry";
+      extractor->MarkInitialized(true);
+    }
   }
-
-  return LoadEntities(data_resource);
+  return extractor;
 }
 
 bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
@@ -117,23 +116,6 @@ bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
   return true;
 }
 
-ThirdPartyExtractor::~ThirdPartyExtractor() = default;
-
-// static
-ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
-  auto* extractor = base::Singleton<ThirdPartyExtractor>::get();
-  // By default initialize from packaged resources
-  if (!extractor->IsInitialized()) {
-    bool initialized = extractor->InitializeFromResource();
-    if (!initialized) {
-      VLOG(2) << "Initialization from resource failed, marking as initialized "
-              << "will not retry";
-      extractor->MarkInitialized(true);
-    }
-  }
-  return extractor;
-}
-
 base::Optional<std::string> ThirdPartyExtractor::GetEntity(
     const base::StringPiece origin_or_url) const {
   base::Optional<std::string> domain =
@@ -150,6 +132,24 @@ base::Optional<std::string> ThirdPartyExtractor::GetEntity(
   }
 
   return base::nullopt;
+}
+
+ThirdPartyExtractor::ThirdPartyExtractor() = default;
+
+ThirdPartyExtractor::~ThirdPartyExtractor() = default;
+
+bool ThirdPartyExtractor::InitializeFromResource() {
+  const auto resource_id = IDR_THIRD_PARTY_ENTITIES;
+
+  auto& resource_bundle = ui::ResourceBundle::GetSharedInstance();
+  std::string data_resource;
+  if (resource_bundle.IsGzipped(resource_id)) {
+    data_resource = resource_bundle.DecompressDataResource(resource_id);
+  } else {
+    data_resource = resource_bundle.GetRawDataResource(resource_id).as_string();
+  }
+
+  return LoadEntities(data_resource);
 }
 
 }  // namespace brave_perf_predictor

@@ -5,16 +5,13 @@
 
 #include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 
-#include <fstream>
-#include <streambuf>
-
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
 namespace brave_perf_predictor {
 
-const char test_mapping[] = R"(
+constexpr char test_mapping[] = R"(
 [
 {
     "name":"Google Analytics",
@@ -49,12 +46,9 @@ std::string LoadFile() {
           .Append(FILE_PATH_LITERAL("entities-httparchive-nostats.json"));
 
   std::string value;
-  bool read = ReadFileToString(path, &value);
-  if (read) {
-    return value;
-  } else {
-    return "";
-  }
+  const bool ok = ReadFileToString(path, &value);
+  if (!ok) return {};
+  return value;
 }
 
 }  // namespace
