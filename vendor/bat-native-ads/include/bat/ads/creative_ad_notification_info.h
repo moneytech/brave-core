@@ -7,6 +7,7 @@
 #define BAT_ADS_CREATIVE_AD_NOTIFICATION_INFO_H_
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "bat/ads/creative_ad_info.h"

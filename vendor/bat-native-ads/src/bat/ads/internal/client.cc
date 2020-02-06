@@ -355,7 +355,8 @@ void Client::ResetAdsUUIDSeen(
   BLOG(INFO) << "Resetting seen ads";
 
   for (const auto& ad : ads) {
-    auto ad_uuid_seen = client_state_->ads_uuid_seen.find(ad.creative_instance_id);
+    auto ad_uuid_seen = client_state_->ads_uuid_seen.find(
+        ad.creative_instance_id);
     if (ad_uuid_seen != client_state_->ads_uuid_seen.end()) {
       client_state_->ads_uuid_seen.erase(ad_uuid_seen);
     }

@@ -96,7 +96,8 @@ bool BatAdsClientMojoBridge::IsEnabled() const {
   return is_enabled;
 }
 
-bool BatAdsClientMojoBridge::ShouldShowPublisherAdsOnPariticipatingSites() const {
+bool
+BatAdsClientMojoBridge::ShouldShowPublisherAdsOnPariticipatingSites() const {
   if (!connected()) {
     return false;
   }

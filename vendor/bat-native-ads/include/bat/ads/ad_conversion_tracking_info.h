@@ -7,6 +7,7 @@
 #define BAT_ADS_AD_CONVERSION_TRACKING_INFO_H_
 
 #include <string>
+#include <vector>
 
 #include "bat/ads/export.h"
 #include "bat/ads/result.h"

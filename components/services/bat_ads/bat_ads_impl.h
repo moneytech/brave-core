@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "bat/ads/ads.h"
 #include "bat/ads/publisher_ads.h"

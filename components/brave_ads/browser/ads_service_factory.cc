@@ -80,7 +80,8 @@ void AdsServiceFactory::RegisterProfilePrefs(
 
   registry->RegisterBooleanPref(prefs::kEnabled, false);
 
-  registry->RegisterBooleanPref(prefs::kShouldShowPublisherAdsOnParticipatingSites,
+  registry->RegisterBooleanPref(
+      prefs::kShouldShowPublisherAdsOnParticipatingSites,
       true);
 
   registry->RegisterBooleanPref(prefs::kShouldAllowAdConversionTracking, true);

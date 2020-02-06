@@ -37,7 +37,8 @@ const std::string PerHourFrequencyCap::GetLastMessage() const {
 
 bool PerHourFrequencyCap::DoesAdRespectPerHourCap(
     const CreativeAdInfo& ad) const {
-  auto ads_shown = frequency_capping_->GetAdsHistoryForUuid(ad.creative_instance_id);
+  auto ads_shown = frequency_capping_->GetAdsHistoryForUuid(
+      ad.creative_instance_id);
   auto hour_window = base::Time::kSecondsPerHour;
 
   return frequency_capping_->DoesHistoryRespectCapForRollingTimeConstraint(
