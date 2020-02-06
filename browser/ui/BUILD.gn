@@ -173,6 +173,13 @@ source_set("ui") {
     ]
   }
 
+  if (is_mac) {
+    sources += [
+      "webui/settings/brave_settings_import_data_handler.mm",
+      "webui/settings/brave_settings_import_data_handler.h",
+    ]
+  }
+
   deps = [
     "//base",
     "//brave/app:command_ids",
