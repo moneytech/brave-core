@@ -16,8 +16,8 @@ source_set("browser") {
     "bandwidth_linreg.cc",
     "bandwidth_linreg.h",
     "bandwidth_linreg_parameters.h",
-    "third_party_extractor.cc",
-    "third_party_extractor.h",
+    "named_third_party_registry.cc",
+    "named_third_party_registry.h",
   ]
 
   deps = [

@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "brave/components/brave_perf_predictor/browser/named_third_party_registry.h"
 
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
@@ -53,64 +53,64 @@ std::string LoadFile() {
 
 }  // namespace
 
-TEST(ThirdPartyExtractorTest, HandlesEmptyJSON) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  bool parsed = extractor->LoadEntities("");
+TEST(NamedThirdPartyRegistryTest, HandlesEmptyJSON) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
+  bool parsed = extractor->LoadMappings("", false);
   EXPECT_FALSE(parsed);
 }
 
-TEST(ThirdPartyExtractorTest, ParsesJSON) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  bool parsed = extractor->LoadEntities(test_mapping);
+TEST(NamedThirdPartyRegistryTest, ParsesJSON) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
+  bool parsed = extractor->LoadMappings(test_mapping, false);
   EXPECT_TRUE(parsed);
 }
 
-TEST(ThirdPartyExtractorTest, HandlesInvalidJSON) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
-  bool parsed = extractor->LoadEntities(R"([{"name":"Google Analytics")");
+TEST(NamedThirdPartyRegistryTest, HandlesInvalidJSON) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
+  bool parsed = extractor->LoadMappings(R"([{"name":"Google Analytics")", false);
   EXPECT_FALSE(parsed);
 }
 
-TEST(ThirdPartyExtractorTest, HandlesFullDataset) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+TEST(NamedThirdPartyRegistryTest, HandlesFullDataset) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
   auto dataset = LoadFile();
-  bool parsed = extractor->LoadEntities(dataset);
+  bool parsed = extractor->LoadMappings(dataset, true);
   EXPECT_TRUE(parsed);
 }
 
-TEST(ThirdPartyExtractorTest, ExtractsThirdPartyURLTest) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+TEST(NamedThirdPartyRegistryTest, ExtractsThirdPartyURLTest) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
   auto dataset = LoadFile();
-  extractor->LoadEntities(dataset);
+  extractor->LoadMappings(dataset, true);
 
-  auto entity = extractor->GetEntity("https://google-analytics.com/ga.js");
+  auto entity = extractor->GetThirdParty("https://google-analytics.com/ga.js");
   ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
 }
 
-TEST(ThirdPartyExtractorTest, ExtractsThirdPartyHostnameTest) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+TEST(NamedThirdPartyRegistryTest, ExtractsThirdPartyHostnameTest) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
   auto dataset = LoadFile();
-  extractor->LoadEntities(dataset);
-  auto entity = extractor->GetEntity("google-analytics.com");
+  extractor->LoadMappings(dataset, true);
+  auto entity = extractor->GetThirdParty("https://google-analytics.com");
   ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Google Analytics");
 }
 
-TEST(ThirdPartyExtractorTest, ExtractsThirdPartyRootDomainTest) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+TEST(NamedThirdPartyRegistryTest, ExtractsThirdPartyRootDomainTest) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
   auto dataset = LoadFile();
-  extractor->LoadEntities(dataset);
-  auto entity = extractor->GetEntity("https://test.m.facebook.com");
+  extractor->LoadMappings(dataset, true);
+  auto entity = extractor->GetThirdParty("https://test.m.facebook.com");
   ASSERT_TRUE(entity.has_value());
   EXPECT_EQ(entity.value(), "Facebook");
 }
 
-TEST(ThirdPartyExtractorTest, HandlesUnrecognisedThirdPartyTest) {
-  ThirdPartyExtractor* extractor = ThirdPartyExtractor::GetInstance();
+TEST(NamedThirdPartyRegistryTest, HandlesUnrecognisedThirdPartyTest) {
+  NamedThirdPartyRegistry* extractor = NamedThirdPartyRegistry::GetInstance();
   auto dataset = LoadFile();
-  extractor->LoadEntities(dataset);
-  auto entity = extractor->GetEntity("example.com");
+  extractor->LoadMappings(dataset, true);
+  auto entity = extractor->GetThirdParty("http://example.com");
   EXPECT_FALSE(entity.has_value());
 }
 

@@ -66,8 +66,6 @@ class PerfPredictorTabHelper
   // content::WebContentsObserver overrides.
   void DidStartNavigation(
       content::NavigationHandle* navigation_handle) override;
-  void ReadyToCommitNavigation(
-      content::NavigationHandle* navigation_handle) override;
   void DidFinishNavigation(
       content::NavigationHandle* navigation_handle) override;
   void ResourceLoadComplete(

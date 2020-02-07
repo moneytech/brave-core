@@ -3,51 +3,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
+#include "brave/components/brave_perf_predictor/browser/named_third_party_registry.h"
 
 #include "base/containers/flat_set.h"
 #include "base/json/json_reader.h"
 #include "base/logging.h"
+#include "base/metrics/histogram_macros.h"
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
 #include "base/values.h"
 #include "brave/components/brave_perf_predictor/browser/bandwidth_linreg_parameters.h"
 #include "components/grit/brave_components_resources.h"
+#include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 #include "third_party/re2/src/re2/re2.h"
 #include "ui/base/resource/resource_bundle.h"
+#include "url/gurl.h"
 
 namespace brave_perf_predictor {
 
-namespace {
-
-RE2 DOMAIN_IN_URL_REGEX(":\\/\\/(.*?)(\\/|$)");
-RE2 DOMAIN_CHARACTERS("([a-z0-9.-]+\\.[a-z0-9]+)");
-RE2 ROOT_DOMAIN_REGEX("([^.]+\\.([^.]+|(gov|com|co|ne)\\.\\w{2})$)");
-
-base::Optional<std::string> GetDomainFromOriginOrUrl(
-    const std::string origin_or_url) {
-  std::string domain;
-  if (RE2::PartialMatch(origin_or_url, DOMAIN_IN_URL_REGEX, &domain))
-    return domain;
-  if (RE2::PartialMatch(origin_or_url, DOMAIN_CHARACTERS, &domain))
-    return domain;
-  return base::nullopt;
-}
-
-std::string GetRootDomain(const std::string domain) {
-  std::string root_domain;
-  if (RE2::PartialMatch(domain, ROOT_DOMAIN_REGEX, &root_domain)) {
-    return root_domain;
-  } else {
-    return domain;
-  }
-}
-
-}  // namespace
-
 // static
-ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
-  auto* extractor = base::Singleton<ThirdPartyExtractor>::get();
+NamedThirdPartyRegistry* NamedThirdPartyRegistry::GetInstance() {
+  auto* extractor = base::Singleton<NamedThirdPartyRegistry>::get();
   // By default initialize from packaged resources
   if (!extractor->IsInitialized()) {
     bool initialized = extractor->InitializeFromResource();
@@ -60,7 +36,8 @@ ThirdPartyExtractor* ThirdPartyExtractor::GetInstance() {
   return extractor;
 }
 
-bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
+bool NamedThirdPartyRegistry::LoadMappings(const base::StringPiece entities,
+                                           const bool discard_irrelevant) {
   // Reset previous mappings
   entity_by_domain_.clear();
   entity_by_root_domain_.clear();
@@ -77,7 +54,7 @@ bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
     const std::string* entity_name = entity.FindStringPath("name");
     if (!entity_name)
       continue;
-    if (!relevant_entity_set.contains(*entity_name)) {
+    if (discard_irrelevant && !relevant_entity_set.contains(*entity_name)) {
       VLOG(3) << "Irrelevant entity " << *entity_name;
       continue;
     }
@@ -96,7 +73,9 @@ bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
       if (!inserted.second) {
         VLOG(2) << "Malformed data: duplicate domain " << entity_domain;
       }
-      auto root_domain = GetRootDomain(entity_domain.as_string());
+      auto root_domain = net::registry_controlled_domains::GetDomainAndRegistry(
+          entity_domain,
+          net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
 
       auto root_entity_entry = entity_by_root_domain_.find(root_domain);
       if (root_entity_entry != entity_by_root_domain_.end() &&
@@ -111,21 +90,27 @@ bool ThirdPartyExtractor::LoadEntities(const base::StringPiece entities) {
 
   entity_by_domain_.shrink_to_fit();
   entity_by_root_domain_.shrink_to_fit();
+  VLOG(2) << "Loaded " << entity_by_domain_.size() << " mappings by domain and "
+          << entity_by_root_domain_.size() << " by root domain; size";
   initialized_ = true;
 
   return true;
 }
 
-base::Optional<std::string> ThirdPartyExtractor::GetEntity(
-    const base::StringPiece origin_or_url) const {
-  base::Optional<std::string> domain =
-      GetDomainFromOriginOrUrl(origin_or_url.as_string());
-  if (domain.has_value()) {
-    auto domain_entry = entity_by_domain_.find(domain.value());
+base::Optional<std::string> NamedThirdPartyRegistry::GetThirdParty(
+    const base::StringPiece request_url) const {
+  const GURL url(request_url);
+  if (!url.is_valid())
+    return base::nullopt;
+
+  if (url.has_host()) {
+    auto domain_entry = entity_by_domain_.find(url.host());
     if (domain_entry != entity_by_domain_.end())
       return domain_entry->second;
 
-    auto root_domain = GetRootDomain(domain.value());
+    auto root_domain = net::registry_controlled_domains::GetDomainAndRegistry(
+        url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+
     auto root_domain_entry = entity_by_root_domain_.find(root_domain);
     if (root_domain_entry != entity_by_root_domain_.end())
       return root_domain_entry->second;
@@ -134,13 +119,15 @@ base::Optional<std::string> ThirdPartyExtractor::GetEntity(
   return base::nullopt;
 }
 
-ThirdPartyExtractor::ThirdPartyExtractor() = default;
+NamedThirdPartyRegistry::NamedThirdPartyRegistry() = default;
 
-ThirdPartyExtractor::~ThirdPartyExtractor() = default;
+NamedThirdPartyRegistry::~NamedThirdPartyRegistry() = default;
 
-bool ThirdPartyExtractor::InitializeFromResource() {
+bool NamedThirdPartyRegistry::InitializeFromResource() {
   const auto resource_id = IDR_THIRD_PARTY_ENTITIES;
-
+  // TODO(AndriusA): insert trace event here
+  SCOPED_UMA_HISTOGRAM_TIMER(
+      "Brave.Savings.NamedThirdPartyRegistry.LoadTimeMS");
   auto& resource_bundle = ui::ResourceBundle::GetSharedInstance();
   std::string data_resource;
   if (resource_bundle.IsGzipped(resource_id)) {
@@ -148,8 +135,8 @@ bool ThirdPartyExtractor::InitializeFromResource() {
   } else {
     data_resource = resource_bundle.GetRawDataResource(resource_id).as_string();
   }
-
-  return LoadEntities(data_resource);
+  // Parse resource, discarding irrelevant entities
+  return LoadMappings(data_resource, true);
 }
 
 }  // namespace brave_perf_predictor

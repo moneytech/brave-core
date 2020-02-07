@@ -5,7 +5,6 @@
 
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
 
-#include "brave/components/brave_perf_predictor/browser/third_party_extractor.h"
 #include "brave/components/brave_perf_predictor/common/pref_names.h"
 #include "components/prefs/pref_registry_simple.h"
 #include "components/prefs/pref_service.h"
@@ -76,18 +75,8 @@ void PerfPredictorTabHelper::DidStartNavigation(
   if (!handle || !handle->IsInMainFrame() || handle->IsDownload())
     return;
   // Gather prediction of the _previous_ navigation
-  if (navigation_id_ > 0)
+  if (navigation_id_ != handle->GetNavigationId() && navigation_id_ > 0)
     RecordSavings();
-}
-
-void PerfPredictorTabHelper::ReadyToCommitNavigation(
-    content::NavigationHandle* handle) {
-  if (!handle || !handle->IsInMainFrame() || handle->IsDownload())
-    return;
-  // Reset predictor state when we're committed to this navigation
-  bandwidth_predictor_->Reset();
-  // Record current nevigation ID to know if we're in the same navigation later
-  navigation_id_ = handle->GetNavigationId();
 }
 
 void PerfPredictorTabHelper::DidFinishNavigation(
@@ -95,6 +84,10 @@ void PerfPredictorTabHelper::DidFinishNavigation(
   if (!handle || !handle->IsInMainFrame() || !handle->HasCommitted() ||
       handle->IsDownload())
     return;
+  // Reset predictor state when we're committed to this navigation
+  bandwidth_predictor_->Reset();
+  // Record current nevigation ID to know if we're in the same navigation later
+  navigation_id_ = handle->GetNavigationId();
 }
 
 void PerfPredictorTabHelper::RecordSavings() {
