@@ -129,12 +129,8 @@ bool NamedThirdPartyRegistry::InitializeFromResource() {
   SCOPED_UMA_HISTOGRAM_TIMER(
       "Brave.Savings.NamedThirdPartyRegistry.LoadTimeMS");
   auto& resource_bundle = ui::ResourceBundle::GetSharedInstance();
-  std::string data_resource;
-  if (resource_bundle.IsGzipped(resource_id)) {
-    data_resource = resource_bundle.DecompressDataResource(resource_id);
-  } else {
-    data_resource = resource_bundle.GetRawDataResource(resource_id).as_string();
-  }
+  std::string data_resource =
+      resource_bundle.LoadDataResourceString(resource_id);
   // Parse resource, discarding irrelevant entities
   return LoadMappings(data_resource, true);
 }
